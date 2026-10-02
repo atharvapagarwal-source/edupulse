@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { getAdminDashboard } from '../services/api';
 import {
-  Users, UserCheck, BookOpen, MessageSquare, Sparkles, Building2,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+} from 'recharts';
+import {
+  Users, UserCheck, BookOpen, MessageSquare, Sparkles, Building2, BarChart3
 } from 'lucide-react';
+
 
 export const AdminDashboard: React.FC = () => {
   const [data, setData] = useState<any>(null);
