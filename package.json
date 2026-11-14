@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "cpp:build": "cd backend_cpp && g++ -std=c++17 server.cpp -lws2_32 -lsqlite3 -o server.exe",
+    "cpp:start": "cd backend_cpp && .\\server.exe"
   },
   "dependencies": {
     "clsx": "^2.1.1",

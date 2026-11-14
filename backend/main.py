@@ -14,7 +14,7 @@ from models import (
 from ai_engine import (
     FeedbackAIEngine, LearningAIEngine, RecommendationAIEngine, GenerativeAIEngine
 )
-from seed_data import seed_database
+
 
 app = FastAPI(title="EduPulse AI Engine & API", version="1.0.0")
 
@@ -28,10 +28,9 @@ app.add_middleware(
 
 @app.on_event("startup")
 def startup():
-    if not os.path.exists(os.path.join(os.path.dirname(__file__), "edupulse.db")):
-        seed_database()
-    else:
-        init_db()
+    # Connect to Supabase and create any missing EduPulse tables.
+    # Demo seed data is not inserted automatically into the live database.
+    init_db()
 
 @app.get("/api/health")
 def health_check():
@@ -346,3 +345,4 @@ def update_profile(req: UpdateProfileSkills, student_id: str = "std-001"):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+
