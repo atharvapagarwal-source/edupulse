@@ -1,7 +1,7 @@
 @echo off
-title EduPulse C++ Academic Intelligence Server
+title StudentConnector C++ Academic Intelligence Server
 echo ========================================================
-echo   EduPulse C++ Backend Engine - OOPS Edition
+echo   StudentConnector C++ Backend Engine - OOPS Edition
 echo ========================================================
 cd backend_cpp
 if not exist server.exe (

@@ -22,7 +22,7 @@ export const CTASection: React.FC<CTAProps> = ({ onGetStarted }) => {
         </h2>
 
         <p className="mt-6 text-slate-300 text-base sm:text-lg max-w-2xl mx-auto font-normal">
-          EduPulse brings feedback, performance, assignments and opportunities together into one intelligent academic platform.
+          StudentConnector brings feedback, performance, assignments and opportunities together into one intelligent academic platform.
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -30,7 +30,7 @@ export const CTASection: React.FC<CTAProps> = ({ onGetStarted }) => {
             onClick={onGetStarted}
             className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-600 to-cyan-500 text-white font-bold text-base shadow-xl shadow-indigo-500/30 hover:scale-[1.02] transition flex items-center justify-center space-x-2"
           >
-            <span>Start Using EduPulse</span>
+            <span>Start Using StudentConnector</span>
             <ArrowRight className="w-5 h-5" />
           </button>
           <button

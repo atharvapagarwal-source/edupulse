@@ -53,7 +53,7 @@ export const AnonymousFeedbackPage: React.FC = () => {
           Your Voice. Without the Pressure.
         </h2>
         <p className="text-slate-300 text-sm sm:text-base mt-2 max-w-xl">
-          Submit honest, constructive feedback about your course pacing, teaching quality, or study materials. EduPulse AI aggregates feedback into class insights while keeping your identity 100% private.
+          Submit honest, constructive feedback about your course pacing, teaching quality, or study materials. StudentConnector AI aggregates feedback into class insights while keeping your identity 100% private.
         </p>
       </div>
 
@@ -212,7 +212,7 @@ export const AnonymousFeedbackPage: React.FC = () => {
           <div className="p-4 bg-purple-50 rounded-xl border border-purple-200 flex items-start space-x-3 text-xs text-purple-900">
             <Lock className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
             <div>
-              <span className="font-bold">Privacy Guarantee:</span> Your identity is not displayed to teachers alongside your feedback. EduPulse uses differential privacy to ensure individual student identity cannot be exposed in teacher analytics.
+              <span className="font-bold">Privacy Guarantee:</span> Your identity is not displayed to teachers alongside your feedback. StudentConnector uses differential privacy to ensure individual student identity cannot be exposed in teacher analytics.
             </div>
           </div>
 

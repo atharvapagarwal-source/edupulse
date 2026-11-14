@@ -17,7 +17,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavClick }) => {
                 <GraduationCap className="w-5 h-5 text-white" />
               </div>
               <div>
-                <span className="font-bold text-lg text-white">EduPulse</span>
+                <span className="font-bold text-lg text-white">StudentConnector</span>
               </div>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed">
@@ -61,7 +61,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavClick }) => {
         </div>
 
         <div className="pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500">
-          <p>© 2026 EduPulse — AI-Powered Academic Intelligence Platform. All rights reserved.</p>
+          <p>© 2026 StudentConnector — Academic Intelligence Platform. All rights reserved.</p>
           <p className="flex items-center mt-2 sm:mt-0">
             Crafted for Students & Educators
           </p>

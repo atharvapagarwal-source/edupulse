@@ -92,7 +92,7 @@ function MainApp() {
   const isFullWidthView = currentTab === 'landing' || currentTab === 'auth';
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+    <div className="min-h-screen bg-[#F5F3ED] text-[#344541] flex flex-col">
       {/* Top Demo Role Switcher Banner */}
       <RoleSwitcherBanner currentTab={currentTab} setCurrentTab={setCurrentTab} />
 

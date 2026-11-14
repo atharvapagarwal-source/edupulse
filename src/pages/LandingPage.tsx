@@ -16,7 +16,7 @@ interface LandingPageProps {
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick, onGetStartedClick, setCurrentTab }) => {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#F5F3ED] text-[#344541] flex flex-col font-sans">
       {/* MARKETING NAVBAR */}
       <nav className="fixed top-0 left-0 right-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -26,7 +26,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick, onGetSta
               <GraduationCap className="w-5 h-5 text-white" />
             </div>
             <div>
-              <span className="font-extrabold text-lg text-white tracking-tight">EduPulse</span>
+              <span className="font-extrabold text-lg text-white tracking-tight">StudentConnector</span>
               <span className="block text-[9px] text-cyan-400 font-semibold tracking-wider uppercase">AI Platform</span>
             </div>
           </div>

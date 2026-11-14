@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { UserCheck, ShieldCheck, GraduationCap, Eye, Home } from 'lucide-react';
+import { Eye, Home, GraduationCap, UserCheck, ShieldCheck } from 'lucide-react';
 import { UserRole } from '../../types';
 
 interface RoleSwitcherProps {
@@ -19,12 +19,12 @@ export const RoleSwitcherBanner: React.FC<RoleSwitcherProps> = ({ currentTab, se
   };
 
   return (
-    <div className="bg-slate-900 text-slate-200 text-xs py-2 px-4 flex flex-wrap items-center justify-between border-b border-slate-800 shadow-md">
+    <div className="bg-[#173F3A] text-[#F5F3ED] text-xs py-2 px-4 flex flex-wrap items-center justify-between border-b border-[#102d29] shadow-sm">
       <div className="flex items-center space-x-2">
-        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-          <Eye className="w-3 h-3 mr-1" /> Interactive Demo Mode
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#79A995]/20 text-[#DCE9E1] border border-[#79A995]/30">
+          <Eye className="w-3 h-3 mr-1 text-[#E7B978]" /> Interactive Demo Mode
         </span>
-        <span className="hidden sm:inline text-slate-400">
+        <span className="hidden sm:inline text-[#DCE9E1]/80">
           Click any role to switch live view:
         </span>
       </div>
@@ -32,22 +32,22 @@ export const RoleSwitcherBanner: React.FC<RoleSwitcherProps> = ({ currentTab, se
       <div className="flex items-center space-x-1 sm:space-x-2">
         <button
           onClick={() => setCurrentTab('landing')}
-          className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition ${
-            currentTab === 'landing' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-800 text-slate-300'
+          className={`flex items-center space-x-1 px-2.5 py-1 rounded-lg transition ${
+            currentTab === 'landing' ? 'bg-[#79A995] text-[#173F3A] font-semibold' : 'hover:bg-[#102d29] text-[#DCE9E1]'
           }`}
         >
           <Home className="w-3.5 h-3.5" />
           <span>Landing Page</span>
         </button>
 
-        <span className="text-slate-700">|</span>
+        <span className="text-[#79A995]/40">|</span>
 
         <button
           onClick={() => handleRoleChange('STUDENT')}
-          className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition ${
+          className={`flex items-center space-x-1 px-2.5 py-1 rounded-lg transition ${
             role === 'STUDENT' && currentTab !== 'landing'
-              ? 'bg-blue-600 text-white font-medium shadow-sm'
-              : 'hover:bg-slate-800 text-slate-300'
+              ? 'bg-[#E7B978] text-[#173F3A] font-semibold shadow-xs'
+              : 'hover:bg-[#102d29] text-[#DCE9E1]'
           }`}
         >
           <GraduationCap className="w-3.5 h-3.5" />
@@ -56,10 +56,10 @@ export const RoleSwitcherBanner: React.FC<RoleSwitcherProps> = ({ currentTab, se
 
         <button
           onClick={() => handleRoleChange('TEACHER')}
-          className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition ${
+          className={`flex items-center space-x-1 px-2.5 py-1 rounded-lg transition ${
             role === 'TEACHER' && currentTab !== 'landing'
-              ? 'bg-purple-600 text-white font-medium shadow-sm'
-              : 'hover:bg-slate-800 text-slate-300'
+              ? 'bg-[#79A995] text-[#173F3A] font-semibold shadow-xs'
+              : 'hover:bg-[#102d29] text-[#DCE9E1]'
           }`}
         >
           <UserCheck className="w-3.5 h-3.5" />
@@ -68,14 +68,14 @@ export const RoleSwitcherBanner: React.FC<RoleSwitcherProps> = ({ currentTab, se
 
         <button
           onClick={() => handleRoleChange('ADMIN')}
-          className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition ${
+          className={`flex items-center space-x-1 px-2.5 py-1 rounded-lg transition ${
             role === 'ADMIN' && currentTab !== 'landing'
-              ? 'bg-emerald-600 text-white font-medium shadow-sm'
-              : 'hover:bg-slate-800 text-slate-300'
+              ? 'bg-[#79A995] text-[#173F3A] font-semibold shadow-xs'
+              : 'hover:bg-[#102d29] text-[#DCE9E1]'
           }`}
         >
           <ShieldCheck className="w-3.5 h-3.5" />
-          <span>Admin (Dean)</span>
+          <span>Admin</span>
         </button>
       </div>
     </div>

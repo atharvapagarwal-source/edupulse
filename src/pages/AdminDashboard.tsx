@@ -31,7 +31,7 @@ export const AdminDashboard: React.FC = () => {
           <div>
             <span className="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">Institutional Command Center</span>
             <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-1">
-              EduPulse Institutional Analytics
+              StudentConnector Institutional Analytics
             </h2>
             <p className="text-slate-300 text-sm mt-1">
               VIT University • School of Computer Science & Academic Affairs

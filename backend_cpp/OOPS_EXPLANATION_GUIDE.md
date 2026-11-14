@@ -1,4 +1,4 @@
-# EduPulse C++ OOPS Architecture & Viva Cheat-Sheet
+# StudentConnector C++ OOPS Architecture & Viva Cheat-Sheet
 
 This guide prepares you to explain the C++ backend to your professor ("Mam") step-by-step.
 
@@ -24,7 +24,7 @@ Open [`backend_cpp/models.hpp`](file:///d:/VIT%20Sem%203/OOPS/edupulse/backend_c
   virtual std::string getRole() const = 0;
   ```
 * **Explanation to Mam**:  
-  *"Mam, the `User` class is an abstract base class. It defines the generic interface for any user in EduPulse. Because `getRole()` has `= 0`, it cannot be instantiated directly, enforcing pure abstraction."*
+  *"Mam, the `User` class is an abstract base class. It defines the generic interface for any user in StudentConnector. Because `getRole()` has `= 0`, it cannot be instantiated directly, enforcing pure abstraction."*
 
 ### 2. Encapsulation & Data Hiding
 * **Protected and Private Members**:
@@ -96,7 +96,7 @@ Open [`backend_cpp/models.hpp`](file:///d:/VIT%20Sem%203/OOPS/edupulse/backend_c
 * You will see:
   ```text
   [INFO] SQLite database connected
-  [READY] EduPulse C++ Server listening on http://localhost:8000
+  [READY] StudentConnector C++ Server listening on http://localhost:8000
   ```
 
 ### Step 2: Start the Website Frontend

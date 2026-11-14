@@ -18,7 +18,7 @@ interface AuthContextType {
 const defaultStudent: User = {
   id: 'std-001',
   name: 'Atharva Pagarwal',
-  email: 'atharva@edupulse.edu',
+  email: 'atharva@studentconnector.edu',
   role: 'STUDENT',
   college: 'VIT University',
   course: 'B.Tech Computer Science',
@@ -29,7 +29,7 @@ const defaultStudent: User = {
 const defaultTeacher: User = {
   id: 'tch-001',
   name: 'Prof. Rajesh Sharma',
-  email: 'sharma@edupulse.edu',
+  email: 'sharma@studentconnector.edu',
   role: 'TEACHER',
   college: 'VIT University',
   course: 'School of Computer Science & Eng.',
@@ -40,7 +40,7 @@ const defaultTeacher: User = {
 const defaultAdmin: User = {
   id: 'adm-001',
   name: 'Dr. Sunita Deshmukh',
-  email: 'admin@edupulse.edu',
+  email: 'admin@studentconnector.edu',
   role: 'ADMIN',
   college: 'VIT University',
   course: 'Academic Affairs & Analytics',

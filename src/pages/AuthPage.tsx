@@ -10,7 +10,7 @@ interface AuthPageProps {
 export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
   const { loginAsRole } = useAuth();
   const [isRegister, setIsRegister] = useState(false);
-  const [email, setEmail] = useState('atharva@edupulse.edu');
+  const [email, setEmail] = useState('atharva@studentconnector.edu');
   const [password, setPassword] = useState('password123');
   const [selectedRole, setSelectedRole] = useState<UserRole>('STUDENT');
 
@@ -36,7 +36,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-400 flex items-center justify-center shadow-lg mx-auto mb-3">
             <GraduationCap className="w-6 h-6 text-white" />
           </div>
-          <h2 className="text-2xl font-extrabold text-white tracking-tight">EduPulse Portal</h2>
+          <h2 className="text-2xl font-extrabold text-white tracking-tight">StudentConnector Portal</h2>
           <p className="text-xs text-slate-400">AI-Powered Academic Intelligence Platform</p>
         </div>
 
@@ -116,7 +116,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
             type="submit"
             className="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold text-xs shadow-lg transition flex items-center justify-center space-x-2"
           >
-            <span>{isRegister ? 'Create EduPulse Account' : 'Sign In'}</span>
+            <span>{isRegister ? 'Create StudentConnector Account' : 'Sign In'}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>

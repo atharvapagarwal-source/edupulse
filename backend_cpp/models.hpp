@@ -10,7 +10,7 @@ using json = nlohmann::json;
 // ============================================================================
 // 1. ABSTRACTION & ENCAPSULATION: Base Class User
 // ============================================================================
-// Represents a generic user in the EduPulse academic system.
+// Represents a generic user in the StudentConnector academic system.
 // Demonstrates Encapsulation (protected fields) and Abstraction (pure virtual).
 class User {
 protected:

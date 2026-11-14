@@ -18,7 +18,7 @@ void setCorsHeaders(httplib::Response& res) {
 
 int main() {
     std::cout << "=========================================================\n";
-    std::cout << "   EduPulse C++ Academic Intelligence Server (Port 8000)  \n";
+    std::cout << "   StudentConnector C++ Server (Port 8000)                \n";
     std::cout << "   Object-Oriented Programming (OOPS) Architecture        \n";
     std::cout << "=========================================================\n";
 
@@ -48,7 +48,7 @@ int main() {
         setCorsHeaders(res);
         json out = {
             {"status", "online"},
-            {"server", "EduPulse C++ High-Performance Backend Engine"},
+            {"server", "StudentConnector C++ High-Performance Backend Engine"},
             {"oops_enabled", true}
         };
         res.set_content(out.dump(), "application/json");
@@ -61,7 +61,7 @@ int main() {
     svr.Post("/api/auth/login", [](const httplib::Request& req, httplib::Response& res) {
         setCorsHeaders(res);
         json body = json::parse(req.body, nullptr, false);
-        std::string email = body.value("email", "atharva@edupulse.edu");
+        std::string email = body.value("email", "atharva@studentconnector.edu");
 
         // POLYMORPHISM & FACTORY PATTERN:
         // A base class pointer (std::unique_ptr<User>) points to derived objects!
@@ -93,7 +93,7 @@ int main() {
         setCorsHeaders(res);
         
         // Instantiate Student object (Encapsulating academic data)
-        Student student("std-001", "Atharva Pagarwal", "atharva@edupulse.edu", 8.2, 87.0, 80.0);
+        Student student("std-001", "Atharva Pagarwal", "atharva@studentconnector.edu", 8.2, 87.0, 80.0);
 
         json out = {
             {"cgpa", student.getCGPA()},
@@ -372,7 +372,7 @@ int main() {
     // ------------------------------------------------------------------------
     // Start Server
     // ------------------------------------------------------------------------
-    std::cout << "\n[READY] EduPulse C++ Server listening on http://localhost:8000\n";
+    std::cout << "\n[READY] StudentConnector C++ Server listening on http://localhost:8000\n";
     std::cout << "[INFO] Frontend proxy connects to http://127.0.0.1:8000\n";
     std::cout << "Waiting for requests from browser...\n\n";
 

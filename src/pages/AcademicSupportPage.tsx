@@ -72,7 +72,7 @@ export const AcademicSupportPage: React.FC = () => {
         <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex items-start space-x-3 text-xs text-slate-600">
           <Info className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
           <div>
-            <strong>System Guidance:</strong> EduPulse uses non-stigmatizing support indicators (Low, Moderate, Higher Support Need). These indicators are intended solely to support proactive faculty intervention and academic guidance, not definitive predictions about student potential.
+            <strong>System Guidance:</strong> StudentConnector uses non-stigmatizing support indicators (Low, Moderate, Higher Support Need). These indicators are intended solely to support proactive faculty intervention and academic guidance, not definitive predictions about student potential.
           </div>
         </div>
       </div>

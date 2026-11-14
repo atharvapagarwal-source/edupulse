@@ -29,7 +29,7 @@ export const OpportunitiesPage: React.FC = () => {
 
   const handleApply = (id: string) => {
     setAppliedIds(prev => [...prev, id]);
-    alert("Application submitted successfully through EduPulse Opportunity Portal!");
+    alert("Application submitted successfully through StudentConnector Opportunity Portal!");
   };
 
   return (

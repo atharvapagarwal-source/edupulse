@@ -17,7 +17,7 @@ export const AIAssistantPage: React.FC = () => {
   const [messages, setMessages] = useState<Array<{ sender: 'user' | 'ai'; text: string; time: string }>>([
     {
       sender: 'ai',
-      text: `Hello ${user?.name.split(' ')[0] || 'Atharva'}! I'm your EduPulse AI Copilot. I have indexed your academic record (CGPA 8.2, 87% attendance, weak topics identified in Computer Networks TCP/IP & Trees). How can I assist your studies today?`,
+      text: `Hello ${user?.name.split(' ')[0] || 'Atharva'}! I'm your StudentConnector AI Copilot. I have indexed your academic record (CGPA 8.2, 87% attendance, weak topics identified in Computer Networks TCP/IP & Trees). How can I assist your studies today?`,
       time: 'Just now'
     }
   ]);
@@ -59,7 +59,7 @@ export const AIAssistantPage: React.FC = () => {
             <Bot className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-white">EduPulse AI</h2>
+            <h2 className="text-xl sm:text-2xl font-extrabold text-white">StudentConnector AI</h2>
             <p className="text-xs text-indigo-300 font-medium">Your Academic Copilot & Personal Study Guide</p>
           </div>
         </div>

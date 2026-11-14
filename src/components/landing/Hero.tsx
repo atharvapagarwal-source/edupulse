@@ -33,7 +33,7 @@ export const Hero: React.FC<HeroProps> = ({ onGetStarted, onExploreFeatures }) =
 
           {/* Subheading */}
           <p className="text-lg sm:text-xl text-slate-300 font-normal leading-relaxed">
-            EduPulse connects students and teachers through AI-powered learning insights, anonymous feedback, intelligent assignment management, and personalized opportunity discovery.
+            StudentConnector connects students and teachers through AI-powered learning insights, anonymous feedback, intelligent assignment management, and personalized opportunity discovery.
           </p>
 
           {/* Action Buttons */}
@@ -66,7 +66,7 @@ export const Hero: React.FC<HeroProps> = ({ onGetStarted, onExploreFeatures }) =
                 <div className="w-3 h-3 rounded-full bg-rose-500/80" />
                 <div className="w-3 h-3 rounded-full bg-amber-500/80" />
                 <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
-                <span className="ml-2 text-xs font-mono text-slate-400 hidden sm:inline">edupulse.ai/analytics-dashboard</span>
+                <span className="ml-2 text-xs font-mono text-slate-400 hidden sm:inline">studentconnector.edu/dashboard</span>
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30 flex items-center">

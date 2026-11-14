@@ -18,13 +18,13 @@ export const HowItWorks: React.FC = () => {
     {
       num: '03',
       title: 'Analyze',
-      desc: 'EduPulse AI analyzes performance trends, topic gaps, feedback sentiment and opportunity compatibility.',
+      desc: 'StudentConnector AI analyzes performance trends, topic gaps, feedback sentiment and opportunity compatibility.',
       icon: Brain
     },
     {
       num: '04',
       title: 'Improve',
-      desc: 'EduPulse generates actionable study plans, teacher interventions and targeted career recommendations.',
+      desc: 'StudentConnector generates actionable study plans, teacher interventions and targeted career recommendations.',
       icon: TrendingUp
     }
   ];
@@ -37,7 +37,7 @@ export const HowItWorks: React.FC = () => {
             Simple 4-Step Process
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-3 tracking-tight">
-            How EduPulse Works
+            How StudentConnector Works
           </h2>
           <p className="mt-4 text-slate-600 text-base sm:text-lg">
             From raw academic data to personalized learning progress in four seamless steps.

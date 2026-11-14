@@ -16,7 +16,7 @@ export const SolutionFlow: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <span className="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold uppercase tracking-wider">
-            The EduPulse Core Philosophy
+            The StudentConnector Core Philosophy
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-3 tracking-tight">
             One Platform. The Complete Academic Intelligence Loop.

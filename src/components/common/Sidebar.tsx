@@ -18,12 +18,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, setCurrentTab, isO
 
   const studentNav = [
     { id: 'student-dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'performance', label: 'My Performance', icon: BarChart3 },
-    { id: 'assignments', label: 'Assignments', icon: BookOpen },
+    { id: 'performance', label: 'My Progress', icon: BarChart3 },
+    { id: 'assignments', label: 'Classes & Tasks', icon: BookOpen },
+    { id: 'study-planner', label: 'Schedule', icon: Calendar },
     { id: 'anonymous-feedback', label: 'Feedback', icon: MessageSquareHeart },
-    { id: 'study-planner', label: 'Study Planner', icon: Calendar },
     { id: 'opportunities', label: 'Opportunities', icon: Sparkles },
-    { id: 'ai-assistant', label: 'AI Assistant', icon: Bot },
+    { id: 'ai-assistant', label: 'AI Copilot', icon: Bot },
     { id: 'notifications', label: 'Notifications', icon: Bell, badge: notificationsCount > 0 ? notificationsCount : undefined },
     { id: 'profile', label: 'Profile & Skills', icon: User },
   ];
@@ -48,39 +48,39 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, setCurrentTab, isO
       {/* Mobile overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed inset-0 bg-[#173F3A]/40 backdrop-blur-sm z-40 lg:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
 
       <aside className={`
-        fixed top-0 left-0 bottom-0 z-50 w-64 bg-slate-900 text-slate-100 flex flex-col transition-transform duration-300 ease-in-out border-r border-slate-800
+        fixed top-0 left-0 bottom-0 z-50 w-64 bg-[#173F3A] text-[#F5F3ED] flex flex-col transition-transform duration-300 ease-in-out border-r border-[#102d29] shadow-xl
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         {/* Brand Header */}
-        <div className="h-16 flex items-center justify-between px-6 border-b border-slate-800/80">
+        <div className="h-16 flex items-center justify-between px-6 border-b border-[#79A995]/20">
           <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setCurrentTab('landing')}>
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-              <GraduationCap className="w-5 h-5 text-white" />
+            <div className="w-9 h-9 rounded-xl bg-[#79A995] flex items-center justify-center shadow-md shadow-black/10">
+              <GraduationCap className="w-5 h-5 text-[#173F3A]" />
             </div>
             <div>
-              <span className="font-bold text-lg text-white tracking-tight">EduPulse</span>
-              <span className="block text-[10px] text-indigo-400 font-medium tracking-wide uppercase">AI Platform</span>
+              <span className="font-bold text-lg text-white tracking-tight">StudentConnector</span>
+              <span className="block text-[10px] text-[#E7B978] font-medium tracking-wide uppercase">Academic Hub</span>
             </div>
           </div>
         </div>
 
         {/* User Role Badge */}
         <div className="p-4">
-          <div className="bg-slate-800/60 rounded-xl p-3 border border-slate-700/50 flex items-center space-x-3">
+          <div className="bg-[#102d29]/70 rounded-2xl p-3 border border-[#79A995]/20 flex items-center space-x-3">
             <img
               src={user?.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
               alt={user?.name}
-              className="w-10 h-10 rounded-full object-cover ring-2 ring-indigo-500/30"
+              className="w-10 h-10 rounded-full object-cover ring-2 ring-[#79A995]"
             />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-white truncate">{user?.name}</p>
-              <p className="text-[11px] text-indigo-400 font-medium">{role === 'STUDENT' ? 'Student' : role === 'TEACHER' ? 'Faculty' : 'Administrator'}</p>
+              <p className="text-[11px] text-[#E7B978] font-medium">{role === 'STUDENT' ? 'Student' : role === 'TEACHER' ? 'Faculty' : 'Administrator'}</p>
             </div>
           </div>
         </div>
@@ -98,37 +98,38 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, setCurrentTab, isO
                   setIsOpen(false);
                 }}
                 className={`
-                  w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group
+                  w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all
                   ${isActive
-                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-600/25'
-                    : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/60'
+                    ? 'bg-[#79A995] text-[#173F3A] font-semibold shadow-xs'
+                    : 'text-[#DCE9E1] hover:bg-[#102d29] hover:text-white'
                   }
-                  ${item.highlight ? 'border border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20' : ''}
+                  ${item.highlight ? 'border border-[#E7B978]/40' : ''}
                 `}
               >
                 <div className="flex items-center space-x-3">
-                  <Icon className={`w-4 h-4 transition-transform group-hover:scale-110 ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-indigo-400'}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-[#173F3A]' : 'text-[#79A995]'}`} />
                   <span>{item.label}</span>
                 </div>
-                {item.badge !== undefined && (
-                  <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-indigo-500 text-white shadow-sm">
+                {item.badge ? (
+                  <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-[#E7B978] text-[#173F3A]">
                     {item.badge}
                   </span>
-                )}
-                {isActive && <ChevronRight className="w-3.5 h-3.5 text-indigo-200" />}
+                ) : isActive ? (
+                  <ChevronRight className="w-3.5 h-3.5 text-[#173F3A]" />
+                ) : null}
               </button>
             );
           })}
         </div>
 
-        {/* Footer actions */}
-        <div className="p-4 border-t border-slate-800/80">
+        {/* Footer Logout */}
+        <div className="p-4 border-t border-[#79A995]/20">
           <button
-            onClick={() => setCurrentTab('landing')}
-            className="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800/60 transition"
+            onClick={logout}
+            className="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm text-[#DCE9E1] hover:bg-[#102d29] hover:text-[#E7B978] transition"
           >
-            <LogOut className="w-4 h-4 text-slate-400" />
-            <span>Switch Role / Exit</span>
+            <LogOut className="w-4 h-4" />
+            <span>Sign Out</span>
           </button>
         </div>
       </aside>

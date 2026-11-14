@@ -16,7 +16,7 @@ from ai_engine import (
 )
 
 
-app = FastAPI(title="EduPulse AI Engine & API", version="1.0.0")
+app = FastAPI(title="StudentConnector AI Engine & API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -34,7 +34,7 @@ def startup():
 
 @app.get("/api/health")
 def health_check():
-    return {"status": "online", "platform": "EduPulse — AI-Powered Academic Intelligence"}
+    return {"status": "online", "platform": "StudentConnector — Academic Intelligence"}
 
 # AUTHENTICATION
 @app.post("/api/auth/login")
