@@ -1,90 +1,92 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { getNotifications } from '../services/api';
+import { NotificationItem } from '../types';
 import { Bell, CheckCircle2, AlertTriangle, Info, Clock, CheckCheck } from 'lucide-react';
 
 export const NotificationsPage: React.FC = () => {
-  const { markNotificationsAsRead } = useAuth();
-  const [notifications, setNotifications] = useState([
-    {
-      id: 'notif-001',
-      title: 'Upcoming Deadline Alert',
-      message: 'DSA Assignment on Binary Tree Traversal is due on Oct 5 at 11:59 PM.',
-      type: 'warning',
-      is_read: false,
-      timestamp: 'Today, 09:30 AM'
-    },
-    {
-      id: 'notif-002',
-      title: 'AI Performance Improvement',
-      message: 'Your performance score in Python Programming improved by +12% this month!',
-      type: 'success',
-      is_read: false,
-      timestamp: 'Yesterday, 02:15 PM'
-    },
-    {
-      id: 'notif-003',
-      title: 'New High-Match Opportunity',
-      message: 'National AI & Machine Learning Hackathon matches 94% of your profile skills.',
-      type: 'info',
-      is_read: false,
-      timestamp: 'Oct 01, 06:00 PM'
-    },
-    {
-      id: 'notif-004',
-      title: 'Teacher Feedback Released',
-      message: 'Prof. Sharma published graded feedback on your Dijkstra Algorithm submission.',
-      type: 'info',
-      is_read: true,
-      timestamp: 'Sep 28, 11:00 AM'
-    }
-  ]);
+  const { user, markNotificationsAsRead } = useAuth();
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    getNotifications()
+      .then((res) => {
+        setNotifications(res);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error loading notifications:", err);
+        setLoading(false);
+      });
+  }, [user?.id]);
 
   const markAllRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+    setNotifications(prev => prev.map(n => ({ ...n, is_read: 1 })));
     markNotificationsAsRead();
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-12">
-      <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs flex items-center justify-between">
+    <div className="max-w-4xl mx-auto space-y-6 pb-12 font-sans text-[#344541]">
+      <div className="rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-[#DCE9E1]/80 via-[#F5F3ED] to-[#DCE9E1]/50 border border-[#DCE9E1] shadow-xs flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-extrabold text-slate-900">Notification Center</h2>
-          <p className="text-xs text-slate-500 mt-1">Real-time alerts for deadlines, grade updates, and AI recommendations</p>
+          <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#173F3A]/10 text-[#173F3A] text-xs font-semibold mb-2">
+            <Bell className="w-3.5 h-3.5 text-[#E7B978]" />
+            <span>Student Notification Hub</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#173F3A] tracking-tight">
+            Notifications & Alerts
+          </h2>
+          <p className="text-sm text-[#344541]/75 mt-1 font-medium">
+            Alerts for {user?.name}'s upcoming deadlines, assessment evaluations, and recommendations.
+          </p>
         </div>
+
         <button
           onClick={markAllRead}
-          className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition flex items-center space-x-1.5"
+          className="px-4 py-2 rounded-xl bg-white border border-[#DCE9E1] text-[#173F3A] text-xs font-bold transition flex items-center space-x-1.5 hover:bg-[#FAF9F5]"
         >
-          <CheckCheck className="w-4 h-4 text-indigo-600" />
+          <CheckCheck className="w-4 h-4 text-[#79A995]" />
           <span>Mark All Read</span>
         </button>
       </div>
 
       <div className="space-y-3">
-        {notifications.map((n) => (
-          <div
-            key={n.id}
-            className={`p-5 rounded-2xl border transition flex items-start space-x-4 ${
-              !n.is_read ? 'bg-indigo-50/50 border-indigo-200' : 'bg-white border-slate-200/80'
-            }`}
-          >
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-white font-bold ${
-              n.type === 'warning' ? 'bg-rose-500' : n.type === 'success' ? 'bg-emerald-500' : 'bg-indigo-600'
-            }`}>
-              {n.type === 'warning' ? <AlertTriangle className="w-5 h-5" /> : n.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <Info className="w-5 h-5" />}
-            </div>
-
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between">
-                <h4 className="font-bold text-slate-900 text-sm">{n.title}</h4>
-                <span className="text-[11px] text-slate-400 font-mono flex items-center">
-                  <Clock className="w-3 h-3 mr-1" /> {n.timestamp}
-                </span>
-              </div>
-              <p className="text-xs text-slate-600 mt-1 leading-relaxed">{n.message}</p>
-            </div>
+        {loading ? (
+          <div className="p-12 text-center text-xs text-[#344541]/60 bg-white rounded-3xl border border-[#DCE9E1]">
+            Loading student notifications...
           </div>
-        ))}
+        ) : notifications.length === 0 ? (
+          <div className="p-12 text-center text-xs text-[#344541]/60 bg-white rounded-3xl border border-[#DCE9E1]">
+            No notifications found for this student.
+          </div>
+        ) : (
+          notifications.map((n) => (
+            <div
+              key={n.id}
+              className={`p-5 rounded-3xl border transition flex items-start space-x-4 ${
+                !n.is_read ? 'bg-white border-[#79A995]/50 shadow-xs' : 'bg-[#FAF9F5] border-[#E5E2D9]'
+              }`}
+            >
+              <div className={`w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 text-white font-bold ${
+                n.type === 'warning' ? 'bg-[#E7B978] text-[#173F3A]' : n.type === 'success' ? 'bg-[#79A995]' : 'bg-[#173F3A]'
+              }`}>
+                {n.type === 'warning' ? <AlertTriangle className="w-5 h-5" /> : n.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <Info className="w-5 h-5" />}
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-[#173F3A] text-sm">{n.title}</h4>
+                  <span className="text-[11px] text-[#344541]/60 flex items-center">
+                    <Clock className="w-3 h-3 mr-1 text-[#79A995]" /> {n.created_at}
+                  </span>
+                </div>
+                <p className="text-xs text-[#344541]/80 mt-1 leading-relaxed">{n.message}</p>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

@@ -7,9 +7,11 @@ export const ProfilePage: React.FC = () => {
   const { user, userSkills, setUserSkills } = useAuth();
   const [skills, setSkills] = useState<string[]>(userSkills);
   const [newSkill, setNewSkill] = useState('');
-  const [interests, setInterests] = useState<string[]>(["Artificial Intelligence", "Cloud Computing", "Cybersecurity", "Open Source"]);
+  const [interests, setInterests] = useState<string[]>([
+    "Artificial Intelligence", "Systems Programming", "Cloud Architecture", "Data Structures"
+  ]);
   const [newInterest, setNewInterest] = useState('');
-  const [careerGoals, setCareerGoals] = useState('Aiming to become an AI Software Engineer at a top EdTech / SaaS product company.');
+  const [careerGoals, setCareerGoals] = useState('Aiming to become a Software Systems Engineer specializing in C++ and Distributed Systems.');
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -52,128 +54,91 @@ export const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-12">
+    <div className="max-w-4xl mx-auto space-y-6 pb-12 font-sans text-[#344541]">
       {/* Profile Header */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#DCE9E1] shadow-xs flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
         <img
           src={user?.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
           alt={user?.name}
-          className="w-24 h-24 rounded-full object-cover ring-4 ring-indigo-500/20 shadow-md"
+          className="w-20 h-20 rounded-full object-cover ring-4 ring-[#79A995]"
         />
-        <div className="text-center sm:text-left space-y-1">
-          <h2 className="text-2xl font-extrabold text-slate-900">{user?.name}</h2>
-          <p className="text-xs text-indigo-600 font-semibold">{user?.course} • {user?.year}</p>
-          <p className="text-xs text-slate-500">{user?.college}</p>
-          <div className="flex flex-wrap gap-2 pt-2 justify-center sm:justify-start">
-            <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold">
-              CGPA: 8.2
-            </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 text-[11px] font-bold">
-              Attendance: 87%
+
+        <div className="text-center sm:text-left flex-1">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+            <h2 className="text-xl sm:text-2xl font-black text-[#173F3A]">{user?.name}</h2>
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#DCE9E1] text-[#173F3A]">
+              Student ID: {user?.id}
             </span>
           </div>
-        </div>
-      </div>
-
-      {saved && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-900 text-xs font-bold flex items-center space-x-2">
-          <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-          <span>Profile updated! AI Opportunity Recommendation engine re-indexed with your new skills.</span>
-        </div>
-      )}
-
-      {/* EDITABLE SKILLS & INTERESTS */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
-        <h3 className="font-bold text-slate-900 text-lg flex items-center">
-          <Sparkles className="w-5 h-5 mr-2 text-indigo-600" />
-          Skills & Career Recommendations Index
-        </h3>
-
-        {/* Skills Tag Management */}
-        <div className="space-y-3">
-          <label className="block text-xs font-bold text-slate-700 uppercase">Technical Skills</label>
-          <div className="flex flex-wrap gap-2">
-            {skills.map((s, idx) => (
-              <span key={idx} className="px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 text-xs font-semibold border border-indigo-200 flex items-center space-x-1.5">
-                <span>{s}</span>
-                <button onClick={() => handleRemoveSkill(s)} className="text-indigo-400 hover:text-indigo-900">
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </span>
-            ))}
-          </div>
-
-          <div className="flex space-x-2 pt-2">
-            <input
-              type="text"
-              placeholder="Add skill (e.g. PyTorch, React, SQL)..."
-              value={newSkill}
-              onChange={(e) => setNewSkill(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleAddSkill()}
-              className="flex-1 p-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
-            />
-            <button
-              onClick={handleAddSkill}
-              className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs transition flex items-center space-x-1"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Interests Management */}
-        <div className="space-y-3 pt-4 border-t border-slate-100">
-          <label className="block text-xs font-bold text-slate-700 uppercase">Academic & Career Interests</label>
-          <div className="flex flex-wrap gap-2">
-            {interests.map((item, idx) => (
-              <span key={idx} className="px-3 py-1.5 rounded-xl bg-purple-50 text-purple-700 text-xs font-semibold border border-purple-200 flex items-center space-x-1.5">
-                <span>{item}</span>
-                <button onClick={() => handleRemoveInterest(item)} className="text-purple-400 hover:text-purple-900">
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </span>
-            ))}
-          </div>
-
-          <div className="flex space-x-2 pt-2">
-            <input
-              type="text"
-              placeholder="Add interest (e.g. Blockchain, Robotics)..."
-              value={newInterest}
-              onChange={(e) => setNewInterest(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleAddInterest()}
-              className="flex-1 p-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
-            />
-            <button
-              onClick={handleAddInterest}
-              className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-xs transition flex items-center space-x-1"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Career Goals */}
-        <div className="space-y-2 pt-4 border-t border-slate-100">
-          <label className="block text-xs font-bold text-slate-700 uppercase">Career Aspirations</label>
-          <textarea
-            rows={3}
-            value={careerGoals}
-            onChange={(e) => setCareerGoals(e.target.value)}
-            className="w-full p-3 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
-          />
+          <p className="text-xs text-[#344541]/70 mt-1">
+            {user?.course || 'B.Tech Computer Science'} • {user?.year || '3rd Year'} • {user?.college || 'VIT University'}
+          </p>
+          <p className="text-xs text-[#79A995] font-semibold mt-0.5">{user?.email}</p>
         </div>
 
         <button
           onClick={handleSaveProfile}
           disabled={saving}
-          className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition flex items-center justify-center space-x-2"
+          className="px-5 py-2.5 rounded-xl bg-[#173F3A] hover:bg-[#102d29] text-white text-xs font-bold transition flex items-center space-x-2"
         >
-          <Save className="w-4 h-4" />
-          <span>{saving ? 'Updating...' : 'Save Profile & Re-index Opportunities'}</span>
+          {saved ? <CheckCircle2 className="w-4 h-4 text-[#E7B978]" /> : <Save className="w-4 h-4" />}
+          <span>{saving ? 'Saving...' : saved ? 'Changes Saved!' : 'Save Profile'}</span>
         </button>
+      </div>
+
+      {/* Skills Management */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#DCE9E1] shadow-xs space-y-4">
+        <div>
+          <h3 className="text-base font-bold text-[#173F3A]">Verified Coursework & Programming Skills</h3>
+          <p className="text-xs text-[#344541]/60 mt-0.5">Used by the recommendation engine for matching hackathons and internships.</p>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {skills.map((skill) => (
+            <span
+              key={skill}
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-[#FAF9F5] border border-[#E5E2D9] text-[#173F3A]"
+            >
+              <span>{skill}</span>
+              <button onClick={() => handleRemoveSkill(skill)} className="hover:text-rose-500">
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </span>
+          ))}
+        </div>
+
+        <div className="flex items-center space-x-2 pt-2">
+          <input
+            type="text"
+            value={newSkill}
+            onChange={(e) => setNewSkill(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleAddSkill()}
+            placeholder="Add new skill (e.g. C++17, Algorithms, Sockets)..."
+            className="flex-1 p-2.5 rounded-xl border border-[#DCE9E1] text-xs text-[#344541] bg-[#FAF9F5] outline-none focus:border-[#79A995]"
+          />
+          <button
+            onClick={handleAddSkill}
+            className="px-4 py-2.5 rounded-xl bg-[#79A995] text-[#173F3A] text-xs font-bold transition flex items-center space-x-1"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Career Aspirations */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#DCE9E1] shadow-xs space-y-4">
+        <div>
+          <h3 className="text-base font-bold text-[#173F3A]">Career Aspirations & Target Roles</h3>
+          <p className="text-xs text-[#344541]/60 mt-0.5">Helps AI Copilot personalize learning paths for post-graduate career outcomes.</p>
+        </div>
+
+        <textarea
+          rows={3}
+          value={careerGoals}
+          onChange={(e) => setCareerGoals(e.target.value)}
+          className="w-full p-3 rounded-2xl border border-[#DCE9E1] text-xs text-[#344541] bg-[#FAF9F5] outline-none focus:border-[#79A995]"
+        />
       </div>
     </div>
   );

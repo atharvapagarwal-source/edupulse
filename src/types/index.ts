@@ -22,6 +22,17 @@ export interface StudentProfile {
   career_goals: string;
 }
 
+export interface EnrolledClass {
+  id: string;
+  name: string;
+  code: string;
+  description: string;
+  teacher_id: string;
+  teacher_name: string;
+  credits: number;
+  schedule: string;
+}
+
 export interface Assignment {
   id: string;
   title: string;
@@ -42,15 +53,17 @@ export interface AIEvaluation {
   correctness_score: number;
   code_quality: string;
   complexity_analysis: string;
-  missing_edge_cases: string[];
+  missing_edge_cases?: string[];
   ai_feedback: string;
-  disclaimer: string;
+  disclaimer?: string;
 }
 
 export interface TopicPerformance {
   topic: string;
   score: number;
   status: 'Strong' | 'Good' | 'Moderate' | 'Weak';
+  assessment_type?: string;
+  date?: string;
 }
 
 export interface FeedbackItem {
@@ -63,6 +76,7 @@ export interface FeedbackItem {
   difficulty_rating: number;
   pace_rating: number;
   material_rating: number;
+  status?: string;
   created_at: string;
 }
 
@@ -106,28 +120,78 @@ export interface NotificationItem {
 }
 
 export interface StudyPlanDay {
-  day: string;
-  focus_area: string;
-  tasks: string[];
-  estimated_hours: number;
+  day: number | string;
+  topic?: string;
+  focus_area?: string;
+  tasks?: string[];
+  estimated_hours?: number;
+  hours?: number;
+  priority?: string;
 }
 
 export interface StudyPlan {
-  title: string;
+  title?: string;
+  student_id?: string;
   duration_days: number;
-  weak_topics: string[];
+  weak_topics?: string[];
+  focus_topics_count?: number;
   schedule: StudyPlanDay[];
-  ai_tip: string;
+  verified_recommendation?: string;
+  ai_tip?: string;
 }
 
-export interface AcademicSupportStudent {
-  id: string;
-  name: string;
-  attendance_pct: number;
-  assignment_completion_pct: number;
-  average_score: number;
-  support_level: 'Low Support Indicator' | 'Moderate Support Indicator' | 'Higher Support Indicator';
-  style: string;
-  indicators: string[];
-  disclaimer: string;
+export interface StudentDashboardData {
+  student: {
+    id: string;
+    name: string;
+    email: string;
+    course: string;
+    year: string;
+    cgpa: number;
+    attendance: number;
+    assignment_completion: number;
+    average_score: number;
+    skills: string[];
+  };
+  subject_marks: Array<{
+    subject: string;
+    average_score: number;
+    assessments_count: number;
+  }>;
+  upcoming_assignments: Array<{
+    id: string;
+    title: string;
+    subject: string;
+    topic: string;
+    deadline: string;
+    difficulty: string;
+    max_marks: number;
+    status: string;
+  }>;
+  enrolled_classes: EnrolledClass[];
+  notifications: NotificationItem[];
+  recommended_opportunities: Opportunity[];
+  study_recommendation: string;
+  weak_topics_count: number;
+  strongest_subject: string;
+  weakest_subject: string;
+}
+
+export interface StudentPerformanceData {
+  student_id: string;
+  subject_scores: Array<{
+    subject: string;
+    score: number;
+  }>;
+  topic_hierarchy: Record<string, TopicPerformance[]>;
+  trend: Array<{
+    assessment: string;
+    score: number;
+    subject: string;
+    date: string;
+  }>;
+  weak_topics: string[];
+  strong_topics: string[];
+  ai_analysis: string;
+  total_assessments_logged: number;
 }

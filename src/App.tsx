@@ -9,6 +9,7 @@ import { AuthPage } from './pages/AuthPage';
 import { StudentDashboard } from './pages/StudentDashboard';
 import { PerformancePage } from './pages/PerformancePage';
 import { AssignmentsPage } from './pages/AssignmentsPage';
+import { SchedulePage } from './pages/SchedulePage';
 import { AnonymousFeedbackPage } from './pages/AnonymousFeedbackPage';
 import { StudyPlannerPage } from './pages/StudyPlannerPage';
 import { OpportunitiesPage } from './pages/OpportunitiesPage';
@@ -57,6 +58,8 @@ function MainApp() {
         return <PerformancePage setCurrentTab={setCurrentTab} />;
       case 'assignments':
         return <AssignmentsPage />;
+      case 'schedule':
+        return <SchedulePage />;
       case 'anonymous-feedback':
         return <AnonymousFeedbackPage />;
       case 'study-planner':

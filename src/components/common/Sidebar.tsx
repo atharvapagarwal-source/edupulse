@@ -1,9 +1,10 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import {
-  LayoutDashboard, BarChart3, BookOpen, MessageSquareHeart,
-  Calendar, Sparkles, Bot, Bell, User, Users, AlertTriangle,
-  GraduationCap, LogOut, ChevronRight
+  LayoutDashboard, BarChart3, BookOpen, Calendar,
+  Sparkles, MessageSquareHeart, Award, Bot,
+  Bell, User, GraduationCap, LogOut, ChevronRight,
+  AlertTriangle
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -16,13 +17,15 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ currentTab, setCurrentTab, isOpen, setIsOpen }) => {
   const { role, user, logout, notificationsCount } = useAuth();
 
+  // EXACT SPECIFICATION FOR STUDENT SIDEBAR (Items 1 to 10 + 11 Sign Out)
   const studentNav = [
     { id: 'student-dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'performance', label: 'My Progress', icon: BarChart3 },
     { id: 'assignments', label: 'Classes & Tasks', icon: BookOpen },
-    { id: 'study-planner', label: 'Schedule', icon: Calendar },
+    { id: 'schedule', label: 'Schedule', icon: Calendar },
+    { id: 'study-planner', label: 'Study Planner', icon: Sparkles },
     { id: 'anonymous-feedback', label: 'Feedback', icon: MessageSquareHeart },
-    { id: 'opportunities', label: 'Opportunities', icon: Sparkles },
+    { id: 'opportunities', label: 'Opportunities', icon: Award },
     { id: 'ai-assistant', label: 'AI Copilot', icon: Bot },
     { id: 'notifications', label: 'Notifications', icon: Bell, badge: notificationsCount > 0 ? notificationsCount : undefined },
     { id: 'profile', label: 'Profile & Skills', icon: User },
@@ -60,7 +63,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, setCurrentTab, isO
         {/* Brand Header */}
         <div className="h-16 flex items-center justify-between px-6 border-b border-[#79A995]/20">
           <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setCurrentTab('landing')}>
-            <div className="w-9 h-9 rounded-xl bg-[#79A995] flex items-center justify-center shadow-md shadow-black/10">
+            <div className="w-9 h-9 rounded-xl bg-[#79A995] flex items-center justify-center shadow-md">
               <GraduationCap className="w-5 h-5 text-[#173F3A]" />
             </div>
             <div>
@@ -70,7 +73,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, setCurrentTab, isO
           </div>
         </div>
 
-        {/* User Role Badge */}
+        {/* Authenticated Student Profile Card */}
         <div className="p-4">
           <div className="bg-[#102d29]/70 rounded-2xl p-3 border border-[#79A995]/20 flex items-center space-x-3">
             <img
@@ -80,13 +83,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, setCurrentTab, isO
             />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-white truncate">{user?.name}</p>
-              <p className="text-[11px] text-[#E7B978] font-medium">{role === 'STUDENT' ? 'Student' : role === 'TEACHER' ? 'Faculty' : 'Administrator'}</p>
+              <p className="text-[11px] text-[#E7B978] font-medium truncate">
+                {user?.role === 'STUDENT' ? `Student (${user.id})` : user?.role === 'TEACHER' ? 'Faculty' : 'Administrator'}
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Nav Links */}
-        <div className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
+        {/* 10 Navigation Items */}
+        <div className="flex-1 px-3 py-1 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = currentTab === item.id;
@@ -98,12 +103,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, setCurrentTab, isO
                   setIsOpen(false);
                 }}
                 className={`
-                  w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all
+                  w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-sm font-medium transition-all
                   ${isActive
                     ? 'bg-[#79A995] text-[#173F3A] font-semibold shadow-xs'
                     : 'text-[#DCE9E1] hover:bg-[#102d29] hover:text-white'
                   }
-                  ${item.highlight ? 'border border-[#E7B978]/40' : ''}
                 `}
               >
                 <div className="flex items-center space-x-3">
@@ -122,13 +126,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, setCurrentTab, isO
           })}
         </div>
 
-        {/* Footer Logout */}
+        {/* 11. Sign Out */}
         <div className="p-4 border-t border-[#79A995]/20">
           <button
-            onClick={logout}
-            className="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm text-[#DCE9E1] hover:bg-[#102d29] hover:text-[#E7B978] transition"
+            onClick={() => {
+              logout();
+              setCurrentTab('auth');
+            }}
+            className="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-[#DCE9E1] hover:bg-[#102d29] hover:text-[#E7B978] transition"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="w-4 h-4 text-[#E7B978]" />
             <span>Sign Out</span>
           </button>
         </div>

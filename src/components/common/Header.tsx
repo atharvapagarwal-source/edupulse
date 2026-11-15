@@ -16,6 +16,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick, currentTab, setCurr
       case 'student-dashboard': return 'Student Dashboard';
       case 'performance': return 'Performance & Subject Analytics';
       case 'assignments': return 'Smart Assignment Workspace';
+      case 'schedule': return 'Class & Session Timetable';
       case 'anonymous-feedback': return 'Anonymous Course Feedback';
       case 'study-planner': return 'Personalized Study Planner';
       case 'opportunities': return 'Opportunity Recommendations';

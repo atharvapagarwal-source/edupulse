@@ -6,6 +6,7 @@ interface AuthContextType {
   role: UserRole;
   setRole: (role: UserRole) => void;
   loginAsRole: (role: UserRole) => void;
+  switchStudentAccount: (studentId: 'std-001' | 'std-002') => void;
   logout: () => void;
   savedOpportunityIds: string[];
   toggleSaveOpportunity: (id: string) => void;
@@ -15,7 +16,7 @@ interface AuthContextType {
   setUserSkills: (skills: string[]) => void;
 }
 
-const defaultStudent: User = {
+export const studentAtharva: User = {
   id: 'std-001',
   name: 'Atharva Pagarwal',
   email: 'atharva@studentconnector.edu',
@@ -26,7 +27,18 @@ const defaultStudent: User = {
   avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
 };
 
-const defaultTeacher: User = {
+export const studentRiya: User = {
+  id: 'std-002',
+  name: 'Riya Sharma',
+  email: 'riya@studentconnector.edu',
+  role: 'STUDENT',
+  college: 'VIT University',
+  course: 'B.Tech Computer Science',
+  year: '3rd Year',
+  avatar_url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80'
+};
+
+export const defaultTeacher: User = {
   id: 'tch-001',
   name: 'Prof. Rajesh Sharma',
   email: 'sharma@studentconnector.edu',
@@ -37,7 +49,7 @@ const defaultTeacher: User = {
   avatar_url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80'
 };
 
-const defaultAdmin: User = {
+export const defaultAdmin: User = {
   id: 'adm-001',
   name: 'Dr. Sunita Deshmukh',
   email: 'admin@studentconnector.edu',
@@ -51,21 +63,58 @@ const defaultAdmin: User = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(defaultStudent);
-  const [role, setRoleState] = useState<UserRole>('STUDENT');
+  const [user, setUser] = useState<User | null>(() => {
+    const savedId = localStorage.getItem('auth_user_id');
+    if (savedId === 'std-002') return studentRiya;
+    if (savedId === 'tch-001') return defaultTeacher;
+    if (savedId === 'adm-001') return defaultAdmin;
+    return studentAtharva;
+  });
+
+  const [role, setRoleState] = useState<UserRole>(() => {
+    return user?.role || 'STUDENT';
+  });
+
   const [savedOpportunityIds, setSavedOpportunityIds] = useState<string[]>(['opp-001']);
   const [notificationsCount, setNotificationsCount] = useState<number>(3);
-  const [userSkills, setUserSkills] = useState<string[]>(["Python", "Machine Learning", "Web Development", "Data Structures", "SQL"]);
+  const [userSkills, setUserSkills] = useState<string[]>(["C++", "Data Structures", "Python", "SQL"]);
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('auth_token', 'jwt-token-' + user.id);
+      localStorage.setItem('auth_user_id', user.id);
+      localStorage.setItem('auth_user_role', user.role);
+    } else {
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_user_id');
+      localStorage.removeItem('auth_user_role');
+    }
+  }, [user]);
 
   const setRole = (newRole: UserRole) => {
     setRoleState(newRole);
-    if (newRole === 'STUDENT') setUser(defaultStudent);
-    else if (newRole === 'TEACHER') setUser(defaultTeacher);
-    else if (newRole === 'ADMIN') setUser(defaultAdmin);
+    if (newRole === 'STUDENT') {
+      setUser(studentAtharva);
+    } else if (newRole === 'TEACHER') {
+      setUser(defaultTeacher);
+    } else if (newRole === 'ADMIN') {
+      setUser(defaultAdmin);
+    }
   };
 
   const loginAsRole = (newRole: UserRole) => {
     setRole(newRole);
+  };
+
+  const switchStudentAccount = (studentId: 'std-001' | 'std-002') => {
+    setRoleState('STUDENT');
+    if (studentId === 'std-002') {
+      setUser(studentRiya);
+      setUserSkills(["React", "TypeScript", "Node.js", "Python"]);
+    } else {
+      setUser(studentAtharva);
+      setUserSkills(["C++", "Data Structures", "Python", "SQL"]);
+    }
   };
 
   const logout = () => {
@@ -88,6 +137,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       role,
       setRole,
       loginAsRole,
+      switchStudentAccount,
       logout,
       savedOpportunityIds,
       toggleSaveOpportunity,

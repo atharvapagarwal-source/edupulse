@@ -1,23 +1,22 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { sendAIChat } from '../services/api';
-import { Bot, Send, Sparkles, User, Brain, RefreshCw } from 'lucide-react';
+import { Bot, Send, Sparkles, User, Brain, AlertCircle, CheckCircle } from 'lucide-react';
 
 export const AIAssistantPage: React.FC = () => {
   const { user } = useAuth();
 
   const suggestedPrompts = [
-    "Why am I struggling in Data Structures?",
-    "Create a 7-day DSA study plan.",
-    "What assignments are due this week?",
-    "Which opportunities match my skills?",
-    "What topics should I revise before my next test?"
+    "What are my weakest topics based on my database records?",
+    "Summarize my academic standing and CGPA",
+    "Explain Polymorphism and Abstract Classes in C++",
+    "Recommend priority practice exercises for my courses"
   ];
 
-  const [messages, setMessages] = useState<Array<{ sender: 'user' | 'ai'; text: string; time: string }>>([
+  const [messages, setMessages] = useState<Array<{ sender: 'user' | 'ai'; text: string; time: string; verifiedCount?: number }>>([
     {
       sender: 'ai',
-      text: `Hello ${user?.name.split(' ')[0] || 'Atharva'}! I'm your StudentConnector AI Copilot. I have indexed your academic record (CGPA 8.2, 87% attendance, weak topics identified in Computer Networks TCP/IP & Trees). How can I assist your studies today?`,
+      text: `Hello ${user?.name.split(' ')[0] || 'Student'}! I'm your StudentConnector AI Copilot. I have indexed your verified academic database records. How can I assist your study session today?`,
       time: 'Just now'
     }
   ]);
@@ -29,39 +28,51 @@ export const AIAssistantPage: React.FC = () => {
     const textToSend = queryText || inputQuery;
     if (!textToSend.trim() || loading) return;
 
-    const userMsg = { sender: 'user' as const, text: textToSend, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
+    const userMsg = {
+      sender: 'user' as const,
+      text: textToSend,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
     setMessages(prev => [...prev, userMsg]);
     setInputQuery('');
     setLoading(true);
 
     try {
-      const res = await sendAIChat(textToSend, user?.id || 'std-001');
-      const aiMsg = { sender: 'ai' as const, text: res.response, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
-      setMessages(prev => [...prev, aiMsg]);
-    } catch (err) {
-      const fallbackAiMsg = {
+      const res = await sendAIChat(textToSend);
+      const aiMsg = {
         sender: 'ai' as const,
-        text: `Based on your recent marks, your performance in Python is 86%, while Trees (61%) and TCP/IP (62%) require revision. I recommend scheduling 45 minutes of tree traversal practice today.`,
+        text: res.response,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        verifiedCount: res.verified_records_used
+      };
+      setMessages(prev => [...prev, aiMsg]);
+    } catch (err: any) {
+      const errorMsg = {
+        sender: 'ai' as const,
+        text: err.message || "Failed to reach AI Copilot server. Please check your backend connection.",
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
-      setMessages(prev => [...prev, fallbackAiMsg]);
+      setMessages(prev => [...prev, errorMsg]);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-12">
+    <div className="max-w-4xl mx-auto space-y-6 pb-12 font-sans text-[#344541]">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 text-white border border-slate-800 shadow-xl flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-cyan-300">
-            <Bot className="w-6 h-6" />
+      <div className="rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-[#DCE9E1]/80 via-[#F5F3ED] to-[#DCE9E1]/50 border border-[#DCE9E1] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#173F3A]/10 text-[#173F3A] text-xs font-semibold mb-2">
+            <Sparkles className="w-3.5 h-3.5 text-[#E7B978]" />
+            <span>Record-Backed Academic Assistant</span>
           </div>
-          <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-white">StudentConnector AI</h2>
-            <p className="text-xs text-indigo-300 font-medium">Your Academic Copilot & Personal Study Guide</p>
-          </div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#173F3A] tracking-tight">
+            StudentConnector AI Copilot
+          </h2>
+          <p className="text-sm text-[#344541]/75 mt-1 font-medium">
+            AI recommendations grounded strictly in {user?.name}'s actual coursework and assessment marks.
+          </p>
         </div>
       </div>
 
@@ -71,68 +82,72 @@ export const AIAssistantPage: React.FC = () => {
           <button
             key={idx}
             onClick={() => handleSend(prompt)}
-            className="px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:border-indigo-400 text-slate-700 hover:text-indigo-600 text-xs font-medium transition shadow-xs flex items-center space-x-1"
+            className="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white border border-[#DCE9E1] text-[#173F3A] hover:bg-[#DCE9E1] hover:border-[#79A995] transition"
           >
-            <Sparkles className="w-3 h-3 text-cyan-500" />
-            <span>{prompt}</span>
+            {prompt}
           </button>
         ))}
       </div>
 
-      {/* CHAT MESSAGES WINDOW */}
-      <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs min-h-[420px] flex flex-col justify-between space-y-6">
-        <div className="space-y-4 overflow-y-auto max-h-[500px] pr-2">
-          {messages.map((m, idx) => (
-            <div
-              key={idx}
-              className={`flex items-start space-x-3 ${m.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}
-            >
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-xs ${
-                m.sender === 'user' ? 'bg-indigo-600' : 'bg-slate-900 text-cyan-400'
-              }`}>
-                {m.sender === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+      {/* Chat Messages Log */}
+      <div className="bg-white rounded-3xl p-6 border border-[#DCE9E1] shadow-xs space-y-4 min-h-[350px] max-h-[500px] overflow-y-auto">
+        {messages.map((m, idx) => (
+          <div key={idx} className={`flex space-x-3 ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+            {m.sender === 'ai' && (
+              <div className="w-8 h-8 rounded-full bg-[#173F3A] text-white flex items-center justify-center flex-shrink-0">
+                <Bot className="w-4 h-4 text-[#E7B978]" />
               </div>
-
-              <div className={`max-w-xl rounded-2xl p-4 text-xs leading-relaxed ${
-                m.sender === 'user'
-                  ? 'bg-indigo-600 text-white rounded-tr-none'
-                  : 'bg-slate-50 border border-slate-200/80 text-slate-800 rounded-tl-none font-medium'
-              }`}>
-                <p>{m.text}</p>
-                <span className={`block text-[10px] mt-1.5 font-mono ${m.sender === 'user' ? 'text-indigo-200' : 'text-slate-400'}`}>
-                  {m.time}
-                </span>
+            )}
+            <div className={`p-4 rounded-2xl max-w-xl text-xs leading-relaxed ${
+              m.sender === 'user'
+                ? 'bg-[#173F3A] text-white'
+                : 'bg-[#FAF9F5] border border-[#E5E2D9] text-[#344541]'
+            }`}>
+              <p>{m.text}</p>
+              <div className="flex items-center justify-between text-[10px] mt-2 opacity-70">
+                <span>{m.time}</span>
+                {m.verifiedCount !== undefined && m.verifiedCount > 0 && (
+                  <span className="font-semibold text-[#79A995]">
+                    ✓ Verified via {m.verifiedCount} DB records
+                  </span>
+                )}
               </div>
             </div>
-          ))}
+            {m.sender === 'user' && (
+              <img
+                src={user?.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60&auto=format&fit=crop&q=80'}
+                alt="Student"
+                className="w-8 h-8 rounded-full object-cover ring-2 ring-[#79A995] flex-shrink-0"
+              />
+            )}
+          </div>
+        ))}
+        {loading && (
+          <div className="flex space-x-3 items-center text-xs text-[#344541]/60 p-2">
+            <Bot className="w-4 h-4 text-[#79A995] animate-spin" />
+            <span>Analyzing student database records...</span>
+          </div>
+        )}
+      </div>
 
-          {loading && (
-            <div className="flex items-center space-x-2 text-xs text-indigo-600 font-semibold p-3 bg-indigo-50 rounded-xl w-48">
-              <RefreshCw className="w-4 h-4 animate-spin text-indigo-600" />
-              <span>Analyzing academic context...</span>
-            </div>
-          )}
-        </div>
-
-        {/* INPUT BOX */}
-        <div className="flex items-center space-x-3 pt-4 border-t border-slate-100">
-          <input
-            type="text"
-            placeholder="Ask anything about your courses, weak topics, or study plans..."
-            value={inputQuery}
-            onChange={(e) => setInputQuery(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            className="flex-1 p-3.5 rounded-2xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
-          />
-          <button
-            onClick={() => handleSend()}
-            disabled={loading}
-            className="px-6 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition shadow-md flex items-center space-x-1"
-          >
-            <Send className="w-4 h-4" />
-            <span className="hidden sm:inline">Send</span>
-          </button>
-        </div>
+      {/* Input Bar */}
+      <div className="flex items-center space-x-2 bg-white rounded-2xl p-2 border border-[#DCE9E1] shadow-xs">
+        <input
+          type="text"
+          value={inputQuery}
+          onChange={(e) => setInputQuery(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+          placeholder={`Ask about your ${user?.name?.split(' ')[0]}'s performance, weak topics, or C++ concepts...`}
+          className="flex-1 px-4 py-2 text-xs text-[#344541] bg-transparent outline-none"
+        />
+        <button
+          onClick={() => handleSend()}
+          disabled={loading || !inputQuery.trim()}
+          className="px-5 py-2.5 rounded-xl bg-[#173F3A] hover:bg-[#102d29] disabled:opacity-40 text-white text-xs font-bold transition flex items-center space-x-1.5"
+        >
+          <span>Send</span>
+          <Send className="w-3.5 h-3.5 text-[#E7B978]" />
+        </button>
       </div>
     </div>
   );
