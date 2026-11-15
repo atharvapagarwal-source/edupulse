@@ -7,6 +7,7 @@ interface AuthContextType {
   setRole: (role: UserRole) => void;
   loginAsRole: (role: UserRole) => void;
   switchStudentAccount: (studentId: 'std-001' | 'std-002') => void;
+  switchTeacherAccount: (teacherId: 'tch-001' | 'tch-002') => void;
   logout: () => void;
   savedOpportunityIds: string[];
   toggleSaveOpportunity: (id: string) => void;
@@ -49,6 +50,19 @@ export const defaultTeacher: User = {
   avatar_url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80'
 };
 
+export const teacherSharma = defaultTeacher;
+
+export const teacherMontgomery: User = {
+  id: 'tch-002',
+  name: 'Dr. Vance Montgomery',
+  email: 'vance@studentconnector.edu',
+  role: 'TEACHER',
+  college: 'VIT University',
+  course: 'School of Computer Science & Eng.',
+  year: 'Professor',
+  avatar_url: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150&auto=format&fit=crop&q=80'
+};
+
 export const defaultAdmin: User = {
   id: 'adm-001',
   name: 'Dr. Sunita Deshmukh',
@@ -66,7 +80,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(() => {
     const savedId = localStorage.getItem('auth_user_id');
     if (savedId === 'std-002') return studentRiya;
-    if (savedId === 'tch-001') return defaultTeacher;
+    if (savedId === 'tch-001') return teacherSharma;
+    if (savedId === 'tch-002') return teacherMontgomery;
     if (savedId === 'adm-001') return defaultAdmin;
     return studentAtharva;
   });
@@ -117,6 +132,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const switchTeacherAccount = (teacherId: 'tch-001' | 'tch-002') => {
+    setRoleState('TEACHER');
+    if (teacherId === 'tch-002') {
+      setUser(teacherMontgomery);
+    } else {
+      setUser(teacherSharma);
+    }
+  };
+
   const logout = () => {
     setUser(null);
   };
@@ -138,6 +162,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setRole,
       loginAsRole,
       switchStudentAccount,
+      switchTeacherAccount,
       logout,
       savedOpportunityIds,
       toggleSaveOpportunity,

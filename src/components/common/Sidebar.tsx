@@ -4,7 +4,7 @@ import {
   LayoutDashboard, BarChart3, BookOpen, Calendar,
   Sparkles, MessageSquareHeart, Award, Bot,
   Bell, User, GraduationCap, LogOut, ChevronRight,
-  AlertTriangle
+  AlertTriangle, CheckSquare, Megaphone, FileText
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -31,12 +31,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, setCurrentTab, isO
     { id: 'profile', label: 'Profile & Skills', icon: User },
   ];
 
+  // EXACT SPECIFICATION FOR TEACHER SIDEBAR (Items 1 to 11 + 12 Sign Out at bottom)
   const teacherNav = [
     { id: 'teacher-dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'academic-support', label: 'Academic Support', icon: AlertTriangle, highlight: true },
-    { id: 'teacher-feedback', label: 'Anonymous Feedback', icon: MessageSquareHeart },
-    { id: 'teacher-assignments', label: 'Assignments & Grading', icon: BookOpen },
-    { id: 'ai-assistant', label: 'AI Class Assistant', icon: Bot },
+    { id: 'teacher-classes', label: 'My Classes', icon: BookOpen },
+    { id: 'teacher-analytics', label: 'Student Analytics', icon: BarChart3 },
+    { id: 'teacher-assignments', label: 'Assignments', icon: FileText },
+    { id: 'teacher-evaluations', label: 'Submissions & Evaluation', icon: CheckSquare },
+    { id: 'teacher-feedback', label: 'Feedback Insights', icon: MessageSquareHeart },
+    { id: 'teacher-schedule', label: 'Schedule', icon: Calendar },
+    { id: 'teacher-announcements', label: 'Announcements', icon: Megaphone },
+    { id: 'teacher-ai', label: 'AI Copilot', icon: Bot },
+    { id: 'teacher-notifications', label: 'Notifications', icon: Bell, badge: notificationsCount > 0 ? notificationsCount : undefined },
+    { id: 'teacher-profile', label: 'Profile', icon: User },
   ];
 
   const adminNav = [

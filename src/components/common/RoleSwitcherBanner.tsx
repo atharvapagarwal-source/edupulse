@@ -9,7 +9,7 @@ interface RoleSwitcherProps {
 }
 
 export const RoleSwitcherBanner: React.FC<RoleSwitcherProps> = ({ currentTab, setCurrentTab }) => {
-  const { user, role, setRole, switchStudentAccount } = useAuth();
+  const { user, role, setRole, switchStudentAccount, switchTeacherAccount } = useAuth();
 
   const handleRoleChange = (newRole: UserRole) => {
     setRole(newRole);
@@ -21,6 +21,11 @@ export const RoleSwitcherBanner: React.FC<RoleSwitcherProps> = ({ currentTab, se
   const handleStudentSwitch = (id: 'std-001' | 'std-002') => {
     switchStudentAccount(id);
     setCurrentTab('student-dashboard');
+  };
+
+  const handleTeacherSwitch = (id: 'tch-001' | 'tch-002') => {
+    switchTeacherAccount(id);
+    setCurrentTab('teacher-dashboard');
   };
 
   return (
@@ -77,17 +82,32 @@ export const RoleSwitcherBanner: React.FC<RoleSwitcherProps> = ({ currentTab, se
 
         <span className="text-[#79A995]/40">|</span>
 
-        {/* Faculty */}
+        {/* Faculty 1 (Prof. Sharma) */}
         <button
-          onClick={() => handleRoleChange('TEACHER')}
+          onClick={() => handleTeacherSwitch('tch-001')}
           className={`flex items-center space-x-1 px-2.5 py-1 rounded-lg transition ${
-            role === 'TEACHER' && currentTab !== 'landing'
-              ? 'bg-[#79A995] text-[#173F3A] font-semibold shadow-xs'
+            role === 'TEACHER' && user?.id === 'tch-001' && currentTab !== 'landing'
+              ? 'bg-[#E7B978] text-[#173F3A] font-bold shadow-xs'
               : 'hover:bg-[#102d29] text-[#DCE9E1]'
           }`}
+          title="Faculty 1: Prof. Rajesh Sharma (Data Structures & OOPS)"
         >
           <UserCheck className="w-3.5 h-3.5" />
-          <span>Faculty (Prof. Sharma)</span>
+          <span>Faculty: Sharma</span>
+        </button>
+
+        {/* Faculty 2 (Dr. Montgomery) */}
+        <button
+          onClick={() => handleTeacherSwitch('tch-002')}
+          className={`flex items-center space-x-1 px-2.5 py-1 rounded-lg transition ${
+            role === 'TEACHER' && user?.id === 'tch-002' && currentTab !== 'landing'
+              ? 'bg-[#E7B978] text-[#173F3A] font-bold shadow-xs'
+              : 'hover:bg-[#102d29] text-[#DCE9E1]'
+          }`}
+          title="Faculty 2: Dr. Vance Montgomery (Computer Networks)"
+        >
+          <UserCheck className="w-3.5 h-3.5" />
+          <span>Faculty: Montgomery</span>
         </button>
 
         {/* Admin */}

@@ -147,6 +147,16 @@ def seed():
         created_at TEXT,
         FOREIGN KEY(user_id) REFERENCES users(id)
     );
+
+    CREATE TABLE announcements (
+        id TEXT PRIMARY KEY,
+        teacher_id TEXT,
+        teacher_name TEXT,
+        subject TEXT,
+        title TEXT,
+        content TEXT,
+        created_at TEXT
+    );
     """)
 
     # 1. Users & Profiles
@@ -254,6 +264,12 @@ def seed():
         "Submitted", None, None,
         json.dumps({"correctness_score": 88, "code_quality": "Good", "complexity_analysis": "O(N^3)", "ai_feedback": "Matrix multiplication and determinant calculations validated."})
     ))
+    # Pending submission for Prof. Rajesh Sharma (tch-001) in OOPS in C++
+    c.execute("INSERT INTO submissions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
+        "subm-006", "asg-004", "std-001", "Atharva Pagarwal", "Oct 08, 2026", "polymorphism_lab.cpp",
+        "Submitted", None, None,
+        json.dumps({"correctness_score": 86, "code_quality": "High", "complexity_analysis": "O(1) Virtual Dispatch", "ai_feedback": "Virtual destructor and abstract base class implemented cleanly."})
+    ))
 
     # 5. Performance Records (std-001 Atharva)
     perf_atharva = [
@@ -319,14 +335,35 @@ def seed():
     for n in notifs_riya:
         c.execute("INSERT INTO notifications VALUES (?, ?, ?, ?, ?, ?, ?)", n)
 
+    # Teacher Notifications
+    notifs_teachers = [
+        ("notif-t01", "tch-001", "New Assignment Submission", "Atharva Pagarwal submitted C++ Polymorphism & Inheritance Lab.", "info", 0, "2026-10-08 14:00"),
+        ("notif-t02", "tch-001", "Course Feedback Summary Ready", "3 new student feedback entries recorded for Data Structures and OOPS.", "success", 0, "2026-10-07 10:30"),
+        ("notif-t03", "tch-001", "Department Meeting Reminder", "Academic curriculum board meeting scheduled for Thursday at 4 PM.", "warning", 1, "2026-10-06 09:00"),
+        ("notif-t04", "tch-002", "Submission Pending Evaluation", "Atharva Pagarwal submitted TCP/IP Packet Header Analyzer.", "info", 0, "2026-10-06 16:30"),
+        ("notif-t05", "tch-002", "Lab Equipment Inspection", "Network lab switches and routers calibrated for practical evaluation.", "success", 0, "2026-10-05 11:15")
+    ]
+    for nt in notifs_teachers:
+        c.execute("INSERT INTO notifications VALUES (?, ?, ?, ?, ?, ?, ?)", nt)
+
     # 7. Anonymous Feedback (associated with student_id internally for history, but anonymized when queried by teacher)
     feedbacks = [
         ("fb-001", "std-001", "Computer Networks", "Dr. Vance Montgomery", "Teaching Pace", "The lecture pace on TCP was good, practical packet trace examples helped.", 4, 3, 3, 4, "Submitted", "2026-10-02"),
         ("fb-002", "std-001", "Data Structures & Algorithms", "Prof. Rajesh Sharma", "Course Difficulty", "Trees and Graph algorithms are well explained, would love extra practice sets.", 5, 4, 3, 5, "Submitted", "2026-10-03"),
-        ("fb-003", "std-002", "OOPS in C++", "Prof. Rajesh Sharma", "Teaching Quality", "The explanation of virtual functions and VTable was exceptionally clear.", 5, 3, 4, 5, "Submitted", "2026-10-01")
+        ("fb-003", "std-002", "OOPS in C++", "Prof. Rajesh Sharma", "Teaching Quality", "The explanation of virtual functions and VTable was exceptionally clear.", 5, 3, 4, 5, "Submitted", "2026-10-01"),
+        ("fb-004", "std-002", "Computer Networks", "Dr. Vance Montgomery", "Course Difficulty", "Socket programming assignment was appropriately challenging. Enjoyed the raw header decoding.", 5, 4, 3, 5, "Submitted", "2026-10-04")
     ]
     for fb in feedbacks:
         c.execute("INSERT INTO anonymous_feedback VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", fb)
+
+    # Announcements
+    announcements = [
+        ("ann-001", "tch-001", "Prof. Rajesh Sharma", "Data Structures & Algorithms", "Mid-Term Exam Syllabus & Format", "The mid-term exam will cover Trees, Binary Search Trees, and Graph Traversals (BFS/DFS). Bring standard blue books.", "Oct 04, 2026"),
+        ("ann-002", "tch-001", "Prof. Rajesh Sharma", "OOPS in C++", "Virtual Functions Lab Evaluation Schedule", "Lab evaluation will be held in Turing Lab during our regular Friday session. Review abstract classes.", "Oct 06, 2026"),
+        ("ann-003", "tch-002", "Dr. Vance Montgomery", "Computer Networks", "Wireshark Packet Trace Submission Guidelines", "Ensure you capture at least 3 distinct TCP 3-way handshakes and include sequence number calculations in your report.", "Oct 05, 2026")
+    ]
+    for ann in announcements:
+        c.execute("INSERT INTO announcements VALUES (?, ?, ?, ?, ?, ?, ?)", ann)
 
     # 8. Opportunities
     opps = [

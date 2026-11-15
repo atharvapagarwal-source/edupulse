@@ -195,3 +195,124 @@ export interface StudentPerformanceData {
   ai_analysis: string;
   total_assessments_logged: number;
 }
+
+// ============================================================================
+// TEACHER SPECIFIC INTERFACES
+// ============================================================================
+
+export interface TeacherDashboardData {
+  teacher: {
+    id: string;
+    name: string;
+    department: string;
+    designation?: string;
+    email?: string;
+  };
+  total_classes: number;
+  total_students: number;
+  class_average_score: number;
+  pending_evaluations_count: number;
+  classes: Array<{
+    id: string;
+    code: string;
+    name: string;
+    schedule: string;
+    credits: number;
+  }>;
+  pending_submissions: TeacherSubmissionItem[];
+  recent_submissions: TeacherSubmissionItem[];
+  feedback_insights: TeacherFeedbackData;
+  announcements: TeacherAnnouncement[];
+  support_needed_count: number;
+}
+
+export interface TeacherSubmissionItem {
+  id: string;
+  assignment_id: string;
+  assignment_title: string;
+  subject: string;
+  student_id: string;
+  student_name: string;
+  submitted_at: string;
+  file_name: string;
+  status: string;
+  marks: number | null;
+  max_marks: number;
+  teacher_feedback?: string | null;
+  ai_evaluation?: any;
+}
+
+export interface TeacherFeedbackData {
+  teacher_id: string;
+  teacher_name: string;
+  total_feedback_count: number;
+  average_teaching_rating: number;
+  average_difficulty_rating: number;
+  average_pace_rating: number;
+  average_material_rating: number;
+  ratings_breakdown: {
+    teaching_quality: number;
+    difficulty: number;
+    pace: number;
+    material: number;
+  };
+  common_topics: string[];
+  recent_comments: Array<{
+    id: string;
+    subject: string;
+    category: string;
+    comment: string;
+    teaching_rating: number;
+    difficulty_rating: number;
+    pace_rating: number;
+    material_rating: number;
+    created_at: string;
+  }>;
+}
+
+export interface TeacherAnnouncement {
+  id: string;
+  teacher_id: string;
+  teacher_name: string;
+  subject: string;
+  title: string;
+  content: string;
+  created_at: string;
+}
+
+export interface TeacherAnalyticsData {
+  teacher_id: string;
+  class_distributions: Array<{
+    grade_range: string;
+    count: number;
+    percentage: number;
+  }>;
+  subject_averages: Array<{
+    subject: string;
+    average_score: number;
+    lowest_score: number;
+    highest_score: number;
+    count: number;
+  }>;
+  assessment_performance: Array<{
+    assessment: string;
+    average: number;
+    count: number;
+  }>;
+  students: Array<{
+    id: string;
+    name: string;
+    average_score: number;
+    assessments_count: number;
+    support_status: 'On Track' | 'Moderate Support' | 'Higher Support';
+  }>;
+  support_indicators: Array<{
+    student_id: string;
+    student_name: string;
+    level: 'Moderate' | 'Higher';
+    average_score: number;
+    evidence: string[];
+    recommendation: string;
+  }>;
+}
+

@@ -749,30 +749,310 @@ int main() {
     });
 
     // ------------------------------------------------------------------------
-    // STRICT SECURITY: Teacher & Admin Endpoints Block Students
+    // STRICT SECURITY: Teacher Endpoints (Role-Protected & Scoped to Assigned Classes)
     // ------------------------------------------------------------------------
+    
+    // 1. Teacher Dashboard Overview
     svr.Get("/api/teacher/dashboard", [&dbManager](const httplib::Request& req, httplib::Response& res) {
         setCorsHeaders(res);
         auto authUser = getAuthenticatedUser(req, dbManager);
 
-        // STRICT ROLE ENFORCEMENT
         if (!authUser || authUser->getRole() != "TEACHER") {
             res.status = 403;
             res.set_content(R"({"error":"Forbidden: Access denied. Teacher credentials required."})", "application/json");
-            std::cout << "[SECURITY BLOCK] Student attempted unauthorized access to /api/teacher/dashboard!\n";
+            std::cout << "[SECURITY BLOCK] Student or non-teacher attempted unauthorized access to /api/teacher/dashboard!\n";
             return;
         }
 
+        json out = dbManager.getTeacherDashboardOverview(authUser->getId(), authUser->getName());
+        res.set_content(out.dump(), "application/json");
+        std::cout << "[LOG] GET /api/teacher/dashboard -> Served for " << authUser->getName() << " (" << authUser->getId() << ")\n";
+    });
+
+    // 2. Teacher Assigned Classes
+    svr.Get("/api/teacher/classes", [&dbManager](const httplib::Request& req, httplib::Response& res) {
+        setCorsHeaders(res);
+        auto authUser = getAuthenticatedUser(req, dbManager);
+
+        if (!authUser || authUser->getRole() != "TEACHER") {
+            res.status = 403;
+            res.set_content(R"({"error":"Forbidden: Teacher credentials required."})", "application/json");
+            return;
+        }
+
+        auto classes = dbManager.getTeacherClasses(authUser->getId());
+        json out = json::array();
+        for (const auto& c : classes) {
+            out.push_back(c.toJson());
+        }
+        res.set_content(out.dump(), "application/json");
+    });
+
+    // 3. Teacher Student Analytics & Academic Support Indicators
+    svr.Get("/api/teacher/analytics", [&dbManager](const httplib::Request& req, httplib::Response& res) {
+        setCorsHeaders(res);
+        auto authUser = getAuthenticatedUser(req, dbManager);
+
+        if (!authUser || authUser->getRole() != "TEACHER") {
+            res.status = 403;
+            res.set_content(R"({"error":"Forbidden: Teacher credentials required."})", "application/json");
+            return;
+        }
+
+        std::string subFilter = "";
+        if (req.has_param("subject")) {
+            subFilter = req.get_param_value("subject");
+        }
+
+        json out = dbManager.getTeacherAnalytics(authUser->getId(), subFilter);
+        res.set_content(out.dump(), "application/json");
+    });
+
+    // 4. Teacher Assignments
+    svr.Get("/api/teacher/assignments", [&dbManager](const httplib::Request& req, httplib::Response& res) {
+        setCorsHeaders(res);
+        auto authUser = getAuthenticatedUser(req, dbManager);
+
+        if (!authUser || authUser->getRole() != "TEACHER") {
+            res.status = 403;
+            res.set_content(R"({"error":"Forbidden: Teacher credentials required."})", "application/json");
+            return;
+        }
+
+        json out = dbManager.getTeacherAssignments(authUser->getId());
+        res.set_content(out.dump(), "application/json");
+    });
+
+    // 5. Create Assignment (with authorization verification)
+    auto handleCreateAssignment = [&dbManager](const httplib::Request& req, httplib::Response& res) {
+        setCorsHeaders(res);
+        auto authUser = getAuthenticatedUser(req, dbManager);
+
+        if (!authUser || authUser->getRole() != "TEACHER") {
+            res.status = 403;
+            res.set_content(R"({"error":"Forbidden: Only teachers can create assignments."})", "application/json");
+            return;
+        }
+
+        json body = json::parse(req.body, nullptr, false);
+        std::string title = body.value("title", "");
+        std::string subject = body.value("subject", "");
+        std::string topic = body.value("topic", "");
+        std::string deadline = body.value("deadline", "Oct 25, 2026");
+        int maxMarks = body.value("max_marks", 100);
+        std::string difficulty = body.value("difficulty", "Medium");
+        std::string desc = body.value("description", "");
+
+        std::string asgId = "asg-" + std::to_string(std::chrono::system_clock::now().time_since_epoch().count() % 1000000);
+
+        bool success = dbManager.createTeacherAssignment(authUser->getId(), asgId, title, subject, topic, deadline, maxMarks, difficulty, desc);
+        if (success) {
+            json out = {
+                {"success", true},
+                {"message", "Assignment published successfully to class."},
+                {"assignment_id", asgId}
+            };
+            res.set_content(out.dump(), "application/json");
+        } else {
+            res.status = 403;
+            res.set_content(R"({"error":"Unauthorized: You can only create assignments for your assigned subjects."})", "application/json");
+        }
+    };
+
+    svr.Post("/api/teacher/assignments/create", handleCreateAssignment);
+    svr.Post("/api/assignments/create", handleCreateAssignment);
+
+    // 6. Teacher Submissions
+    svr.Get("/api/teacher/submissions", [&dbManager](const httplib::Request& req, httplib::Response& res) {
+        setCorsHeaders(res);
+        auto authUser = getAuthenticatedUser(req, dbManager);
+
+        if (!authUser || authUser->getRole() != "TEACHER") {
+            res.status = 403;
+            res.set_content(R"({"error":"Forbidden: Teacher credentials required."})", "application/json");
+            return;
+        }
+
+        std::string asgId = "";
+        if (req.has_param("assignment_id")) {
+            asgId = req.get_param_value("assignment_id");
+        }
+
+        json out = dbManager.getTeacherSubmissions(authUser->getId(), asgId);
+        res.set_content(out.dump(), "application/json");
+    });
+
+    // 7. Evaluate Submission
+    svr.Post("/api/teacher/submissions/evaluate", [&dbManager](const httplib::Request& req, httplib::Response& res) {
+        setCorsHeaders(res);
+        auto authUser = getAuthenticatedUser(req, dbManager);
+
+        if (!authUser || authUser->getRole() != "TEACHER") {
+            res.status = 403;
+            res.set_content(R"({"error":"Forbidden: Only teachers can evaluate submissions."})", "application/json");
+            return;
+        }
+
+        json body = json::parse(req.body, nullptr, false);
+        std::string submId = body.value("submission_id", "");
+        double marks = body.value("marks", 0.0);
+        std::string feedback = body.value("feedback", "");
+
+        bool ok = dbManager.gradeTeacherSubmission(authUser->getId(), submId, marks, feedback);
+        if (ok) {
+            json out = {
+                {"success", true},
+                {"message", "Submission graded and student notified."}
+            };
+            res.set_content(out.dump(), "application/json");
+        } else {
+            res.status = 403;
+            res.set_content(R"({"error":"Unauthorized: You can only evaluate submissions for your assigned subjects."})", "application/json");
+        }
+    });
+
+    // 8. Anonymous Feedback Insights (CRITICAL PRIVACY: STRIPPED OF IDENTITY)
+    auto handleTeacherFeedback = [&dbManager](const httplib::Request& req, httplib::Response& res) {
+        setCorsHeaders(res);
+        auto authUser = getAuthenticatedUser(req, dbManager);
+
+        if (!authUser || authUser->getRole() != "TEACHER") {
+            res.status = 403;
+            res.set_content(R"({"error":"Forbidden: Teacher credentials required."})", "application/json");
+            return;
+        }
+
+        json out = dbManager.getTeacherFeedback(authUser->getId(), authUser->getName());
+        res.set_content(out.dump(), "application/json");
+    };
+    svr.Get("/api/teacher/feedback", handleTeacherFeedback);
+    svr.Get("/api/feedback/analytics", handleTeacherFeedback);
+
+    // 9. Teacher Announcements
+    svr.Get("/api/teacher/announcements", [&dbManager](const httplib::Request& req, httplib::Response& res) {
+        setCorsHeaders(res);
+        auto authUser = getAuthenticatedUser(req, dbManager);
+
+        if (!authUser || authUser->getRole() != "TEACHER") {
+            res.status = 403;
+            res.set_content(R"({"error":"Forbidden: Teacher credentials required."})", "application/json");
+            return;
+        }
+
+        json out = dbManager.getTeacherAnnouncements(authUser->getId());
+        res.set_content(out.dump(), "application/json");
+    });
+
+    svr.Post("/api/teacher/announcements/create", [&dbManager](const httplib::Request& req, httplib::Response& res) {
+        setCorsHeaders(res);
+        auto authUser = getAuthenticatedUser(req, dbManager);
+
+        if (!authUser || authUser->getRole() != "TEACHER") {
+            res.status = 403;
+            res.set_content(R"({"error":"Forbidden: Teacher credentials required."})", "application/json");
+            return;
+        }
+
+        json body = json::parse(req.body, nullptr, false);
+        std::string subject = body.value("subject", "");
+        std::string title = body.value("title", "");
+        std::string content = body.value("content", "");
+        std::string annId = "ann-" + std::to_string(std::chrono::system_clock::now().time_since_epoch().count() % 1000000);
+
+        bool ok = dbManager.createTeacherAnnouncement(annId, authUser->getId(), authUser->getName(), subject, title, content);
+        if (ok) {
+            json out = {
+                {"success", true},
+                {"message", "Announcement shared with assigned class."}
+            };
+            res.set_content(out.dump(), "application/json");
+        } else {
+            res.status = 403;
+            res.set_content(R"({"error":"Unauthorized: You can only make announcements for your assigned classes."})", "application/json");
+        }
+    });
+
+    // 10. Teacher Schedule
+    svr.Get("/api/teacher/schedule", [&dbManager](const httplib::Request& req, httplib::Response& res) {
+        setCorsHeaders(res);
+        auto authUser = getAuthenticatedUser(req, dbManager);
+
+        if (!authUser || authUser->getRole() != "TEACHER") {
+            res.status = 403;
+            res.set_content(R"({"error":"Forbidden: Teacher credentials required."})", "application/json");
+            return;
+        }
+
+        auto classes = dbManager.getTeacherClasses(authUser->getId());
+        json out = json::array();
+        for (const auto& c : classes) {
+            out.push_back({
+                {"course_id", c.id},
+                {"course_name", c.name},
+                {"code", c.code},
+                {"schedule", c.schedule},
+                {"credits", c.credits}
+            });
+        }
+        res.set_content(out.dump(), "application/json");
+    });
+
+    // 11. Teacher Notifications
+    svr.Get("/api/teacher/notifications", [&dbManager](const httplib::Request& req, httplib::Response& res) {
+        setCorsHeaders(res);
+        auto authUser = getAuthenticatedUser(req, dbManager);
+
+        if (!authUser || authUser->getRole() != "TEACHER") {
+            res.status = 403;
+            res.set_content(R"({"error":"Forbidden: Teacher credentials required."})", "application/json");
+            return;
+        }
+
+        auto notifs = dbManager.getStudentNotifications(authUser->getId());
+        json out = json::array();
+        for (const auto& n : notifs) {
+            out.push_back(n.toJson());
+        }
+        res.set_content(out.dump(), "application/json");
+    });
+
+    // 12. Teacher AI Copilot
+    svr.Post("/api/teacher/ai/copilot", [&dbManager](const httplib::Request& req, httplib::Response& res) {
+        setCorsHeaders(res);
+        auto authUser = getAuthenticatedUser(req, dbManager);
+
+        if (!authUser || authUser->getRole() != "TEACHER") {
+            res.status = 403;
+            res.set_content(R"({"error":"Forbidden: Teacher credentials required."})", "application/json");
+            return;
+        }
+
+        json body = json::parse(req.body, nullptr, false);
+        std::string query = body.value("query", "");
+
+        auto analytics = dbManager.getTeacherAnalytics(authUser->getId());
+        int supportCount = analytics["support_indicators"].size();
+        
+        std::string aiResponse = "[Faculty Academic Intelligence]: Analyzed records for your authorized courses. ";
+        if (query.find("support") != std::string::npos || query.find("weak") != std::string::npos) {
+            aiResponse += "Identified " + std::to_string(supportCount) + " students currently flagged for academic support. Primary indicator: assessment score < 70% in mid-term evaluations. Recommend dedicated problem-solving clinic.";
+        } else if (query.find("feedback") != std::string::npos) {
+            aiResponse += "Anonymous student feedback highlights positive reception of live coding and clear conceptual derivations, with pacing adjustments requested for advanced topics.";
+        } else {
+            aiResponse += "Your classes demonstrate a solid average score across recorded assessments. Suggest scheduling mock assessments prior to final end-term examinations.";
+        }
+
         json out = {
-            {"teacher", {{"name", authUser->getName()}, {"department", "Computer Science & Engineering"}}},
-            {"total_students", 65},
-            {"active_assignments", 4},
-            {"pending_grading", 6},
-            {"average_class_score", 79.4}
+            {"query", query},
+            {"response", aiResponse},
+            {"verified_records_used", analytics["class_distributions"].size()}
         };
         res.set_content(out.dump(), "application/json");
     });
 
+    // ------------------------------------------------------------------------
+    // STRICT SECURITY: Admin Endpoints
+    // ------------------------------------------------------------------------
     svr.Get("/api/admin/dashboard", [&dbManager](const httplib::Request& req, httplib::Response& res) {
         setCorsHeaders(res);
         auto authUser = getAuthenticatedUser(req, dbManager);

@@ -18,9 +18,17 @@ import { NotificationsPage } from './pages/NotificationsPage';
 import { ProfilePage } from './pages/ProfilePage';
 
 import { TeacherDashboard } from './pages/TeacherDashboard';
-import { AcademicSupportPage } from './pages/AcademicSupportPage';
-import { TeacherFeedbackAnalyticsPage } from './pages/TeacherFeedbackAnalyticsPage';
+import { TeacherClassesPage } from './pages/TeacherClassesPage';
+import { TeacherStudentAnalyticsPage } from './pages/TeacherStudentAnalyticsPage';
 import { TeacherAssignmentsPage } from './pages/TeacherAssignmentsPage';
+import { TeacherEvaluationsPage } from './pages/TeacherEvaluationsPage';
+import { TeacherFeedbackAnalyticsPage } from './pages/TeacherFeedbackAnalyticsPage';
+import { TeacherSchedulePage } from './pages/TeacherSchedulePage';
+import { TeacherAnnouncementsPage } from './pages/TeacherAnnouncementsPage';
+import { TeacherAICopilotPage } from './pages/TeacherAICopilotPage';
+import { TeacherNotificationsPage } from './pages/TeacherNotificationsPage';
+import { TeacherProfilePage } from './pages/TeacherProfilePage';
+import { AcademicSupportPage } from './pages/AcademicSupportPage';
 
 import { AdminDashboard } from './pages/AdminDashboard';
 
@@ -76,12 +84,28 @@ function MainApp() {
       // Teacher views
       case 'teacher-dashboard':
         return <TeacherDashboard setCurrentTab={setCurrentTab} />;
-      case 'academic-support':
-        return <AcademicSupportPage />;
-      case 'teacher-feedback':
-        return <TeacherFeedbackAnalyticsPage />;
+      case 'teacher-classes':
+        return <TeacherClassesPage />;
+      case 'teacher-analytics':
+        return <TeacherStudentAnalyticsPage />;
       case 'teacher-assignments':
         return <TeacherAssignmentsPage />;
+      case 'teacher-evaluations':
+        return <TeacherEvaluationsPage />;
+      case 'teacher-feedback':
+        return <TeacherFeedbackAnalyticsPage />;
+      case 'teacher-schedule':
+        return <TeacherSchedulePage />;
+      case 'teacher-announcements':
+        return <TeacherAnnouncementsPage />;
+      case 'teacher-ai':
+        return <TeacherAICopilotPage />;
+      case 'teacher-notifications':
+        return <TeacherNotificationsPage />;
+      case 'teacher-profile':
+        return <TeacherProfilePage />;
+      case 'academic-support':
+        return <AcademicSupportPage />;
 
       // Admin views
       case 'admin-dashboard':
