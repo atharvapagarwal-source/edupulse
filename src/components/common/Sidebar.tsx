@@ -17,10 +17,11 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ currentTab, setCurrentTab, isOpen, setIsOpen }) => {
   const { role, user, logout, notificationsCount } = useAuth();
 
-  // EXACT SPECIFICATION FOR STUDENT SIDEBAR (Items 1 to 10 + 11 Sign Out)
+  // EXACT SPECIFICATION FOR STUDENT SIDEBAR
   const studentNav = [
     { id: 'student-dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'performance', label: 'My Progress', icon: BarChart3 },
+    { id: 'student-reports', label: 'My Progress Reports', icon: FileText },
     { id: 'assignments', label: 'Classes & Tasks', icon: BookOpen },
     { id: 'schedule', label: 'Schedule', icon: Calendar },
     { id: 'study-planner', label: 'Study Planner', icon: Sparkles },
@@ -31,11 +32,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, setCurrentTab, isO
     { id: 'profile', label: 'Profile & Skills', icon: User },
   ];
 
-  // EXACT SPECIFICATION FOR TEACHER SIDEBAR (Items 1 to 11 + 12 Sign Out at bottom)
+  // EXACT SPECIFICATION FOR TEACHER SIDEBAR
   const teacherNav = [
     { id: 'teacher-dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'teacher-classes', label: 'My Classes', icon: BookOpen },
     { id: 'teacher-analytics', label: 'Student Analytics', icon: BarChart3 },
+    { id: 'teacher-student-reports', label: 'Student Progress Reports', icon: FileText },
+    { id: 'teacher-class-reports', label: 'Class Progress Reports', icon: GraduationCap },
     { id: 'teacher-assignments', label: 'Assignments', icon: FileText },
     { id: 'teacher-evaluations', label: 'Submissions & Evaluation', icon: CheckSquare },
     { id: 'teacher-feedback', label: 'Feedback Insights', icon: MessageSquareHeart },

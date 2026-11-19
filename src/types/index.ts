@@ -316,3 +316,187 @@ export interface TeacherAnalyticsData {
   }>;
 }
 
+// ============================================================================
+// PROGRESS REPORTS & PERFORMANCE TRACKING TYPES
+// ============================================================================
+
+export type ReportPeriodType = 'daily' | 'weekly' | 'monthly' | 'custom';
+
+export interface ReportPeriodInfo {
+  type: ReportPeriodType;
+  start_date: string;
+  end_date: string;
+  label: string;
+}
+
+export interface StudentProgressReportData {
+  student: {
+    id: string;
+    name: string;
+    email: string;
+    college: string;
+    course: string;
+    year: string;
+    avatar_url?: string;
+    cgpa: number;
+    overall_attendance_pct: number;
+    skills?: string;
+  };
+  period: ReportPeriodInfo;
+  summary_metrics: {
+    average_score: number;
+    eval_count: number;
+    status: string;
+  };
+  subject_performance: Array<{
+    subject: string;
+    code: string;
+    count: number;
+    average_score: number;
+    min_score: number;
+    max_score: number;
+    standing: string;
+    topics: Array<{ topic: string; score: number; type: string }>;
+  }>;
+  assessment_records: Array<{
+    id: string;
+    subject: string;
+    topic: string;
+    score: number;
+    assessment_type: string;
+    assessment_date: string;
+  }>;
+  attendance_summary: {
+    total_sessions: number;
+    present_sessions: number;
+    late_sessions: number;
+    absent_sessions: number;
+    attendance_pct: number;
+    meets_threshold: boolean;
+    sessions: Array<{
+      id: string;
+      subject: string;
+      date: string;
+      status: 'Present' | 'Late' | 'Absent';
+      session_topic: string;
+    }>;
+  };
+  assignment_summary: {
+    total_assigned: number;
+    submitted_count: number;
+    graded_count: number;
+    pending_count: number;
+    completion_pct: number;
+    submitted_list: Array<{
+      assignment_id: string;
+      title: string;
+      subject: string;
+      submitted_at: string;
+      status: string;
+      marks: number | null;
+      max_marks: number;
+    }>;
+    pending_list: Array<{
+      assignment_id: string;
+      title: string;
+      subject: string;
+      deadline: string;
+      max_marks: number;
+      difficulty: string;
+    }>;
+  };
+  comparison: {
+    has_comparison: boolean;
+    delta: number;
+    delta_str: string;
+    label: string;
+    context: string;
+    prior_average?: number;
+  };
+  support_topics: Array<{
+    subject: string;
+    topic: string;
+    score: number;
+    date: string;
+  }>;
+  teacher_remarks: Array<{
+    id: string;
+    subject: string;
+    remark: string;
+    created_at: string;
+    teacher_name?: string;
+  }>;
+  ai_recommendations: Array<{
+    title: string;
+    detail: string;
+  }>;
+}
+
+export interface ClassProgressReportData {
+  class_info: {
+    id: string;
+    name: string;
+    code: string;
+    description: string;
+    teacher_id: string;
+    teacher_name: string;
+    credits: number;
+    schedule: string;
+  };
+  period: ReportPeriodInfo;
+  metrics: {
+    class_average: number;
+    attendance_rate: number;
+    assignment_completion: number;
+    total_enrolled: number;
+    assessment_count: number;
+    session_count: number;
+    submission_count: number;
+  };
+  distributions: Array<{
+    range: string;
+    label: string;
+    count: number;
+    percentage: number;
+  }>;
+  students: Array<{
+    id: string;
+    name: string;
+    attendance_pct: number;
+    assignments_completed: number;
+    assignments_total: number;
+    average_score: number;
+    status: string;
+  }>;
+  assessments: Array<{
+    assessment: string;
+    average: number;
+    lowest: number;
+    highest: number;
+    count: number;
+  }>;
+  support_candidates: Array<{
+    id: string;
+    name: string;
+    score: number;
+    evidence: string[];
+    recommendation: string;
+  }>;
+  recommendations: string[];
+}
+
+export interface ReportHistoryItem {
+  id: string;
+  user_id: string;
+  report_type: 'STUDENT_INDIVIDUAL' | 'CLASS_CONSOLIDATED';
+  target_id: string;
+  target_name: string;
+  period_type: string;
+  start_date: string;
+  end_date: string;
+  file_name: string;
+  file_url: string;
+  created_at: string;
+}
+
+

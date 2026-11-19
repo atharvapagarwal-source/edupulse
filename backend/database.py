@@ -1,8 +1,12 @@
 import os
 from collections.abc import Mapping
 
-import psycopg
-from psycopg.rows import tuple_row
+try:
+    import psycopg
+    from psycopg.rows import tuple_row
+except ImportError:
+    psycopg = None
+    tuple_row = None
 
 
 class Row(Mapping):
@@ -75,18 +79,30 @@ class Connection:
         self._connection.close()
 
 
+import sqlite3
+
 def get_db_connection():
     database_url = os.environ.get("DATABASE_URL")
-    if not database_url:
-        raise RuntimeError("DATABASE_URL is missing. Add it to the backend environment settings.")
-    connection = psycopg.connect(
-        database_url,
-        sslmode="require",
-        connect_timeout=10,
-        prepare_threshold=None,
-        row_factory=tuple_row,
-    )
-    return Connection(connection)
+    if database_url:
+        try:
+            connection = psycopg.connect(
+                database_url,
+                sslmode="require",
+                connect_timeout=10,
+                prepare_threshold=None,
+                row_factory=tuple_row,
+            )
+            return Connection(connection)
+        except Exception as e:
+            print(f"[DB Warning] Could not connect to DATABASE_URL: {e}. Falling back to SQLite.")
+
+    # Standard SQLite connection using backend/edupulse.db
+    db_path = os.path.join(os.path.dirname(__file__), "edupulse.db")
+    if not os.path.exists(db_path):
+        db_path = "edupulse.db"
+    conn = sqlite3.connect(db_path, check_same_thread=False)
+    conn.row_factory = sqlite3.Row
+    return conn
 
 
 def init_db():

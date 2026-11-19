@@ -16,10 +16,13 @@ import { OpportunitiesPage } from './pages/OpportunitiesPage';
 import { AIAssistantPage } from './pages/AIAssistantPage';
 import { NotificationsPage } from './pages/NotificationsPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { StudentReportsPage } from './pages/StudentReportsPage';
 
 import { TeacherDashboard } from './pages/TeacherDashboard';
 import { TeacherClassesPage } from './pages/TeacherClassesPage';
 import { TeacherStudentAnalyticsPage } from './pages/TeacherStudentAnalyticsPage';
+import { TeacherStudentReportsPage } from './pages/TeacherStudentReportsPage';
+import { TeacherClassReportsPage } from './pages/TeacherClassReportsPage';
 import { TeacherAssignmentsPage } from './pages/TeacherAssignmentsPage';
 import { TeacherEvaluationsPage } from './pages/TeacherEvaluationsPage';
 import { TeacherFeedbackAnalyticsPage } from './pages/TeacherFeedbackAnalyticsPage';
@@ -64,6 +67,8 @@ function MainApp() {
         return <StudentDashboard setCurrentTab={setCurrentTab} />;
       case 'performance':
         return <PerformancePage setCurrentTab={setCurrentTab} />;
+      case 'student-reports':
+        return <StudentReportsPage />;
       case 'assignments':
         return <AssignmentsPage />;
       case 'schedule':
@@ -88,6 +93,10 @@ function MainApp() {
         return <TeacherClassesPage />;
       case 'teacher-analytics':
         return <TeacherStudentAnalyticsPage />;
+      case 'teacher-student-reports':
+        return <TeacherStudentReportsPage />;
+      case 'teacher-class-reports':
+        return <TeacherClassReportsPage setCurrentTab={setCurrentTab} />;
       case 'teacher-assignments':
         return <TeacherAssignmentsPage />;
       case 'teacher-evaluations':

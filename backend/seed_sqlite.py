@@ -7,6 +7,10 @@ def seed():
     
     # Drop and recreate tables cleanly to avoid column mismatches
     c.executescript("""
+    DROP TABLE IF EXISTS announcements;
+    DROP TABLE IF EXISTS teacher_remarks;
+    DROP TABLE IF EXISTS generated_reports;
+    DROP TABLE IF EXISTS attendance_records;
     DROP TABLE IF EXISTS saved_opportunities;
     DROP TABLE IF EXISTS notifications;
     DROP TABLE IF EXISTS study_plans;
@@ -156,6 +160,42 @@ def seed():
         title TEXT,
         content TEXT,
         created_at TEXT
+    );
+
+    CREATE TABLE attendance_records (
+        id TEXT PRIMARY KEY,
+        student_id TEXT,
+        subject TEXT,
+        date TEXT,
+        status TEXT,
+        session_topic TEXT,
+        FOREIGN KEY(student_id) REFERENCES users(id)
+    );
+
+    CREATE TABLE generated_reports (
+        id TEXT PRIMARY KEY,
+        user_id TEXT,
+        report_type TEXT,
+        target_id TEXT,
+        target_name TEXT,
+        period_type TEXT,
+        start_date TEXT,
+        end_date TEXT,
+        file_name TEXT,
+        file_url TEXT,
+        created_at TEXT,
+        FOREIGN KEY(user_id) REFERENCES users(id)
+    );
+
+    CREATE TABLE teacher_remarks (
+        id TEXT PRIMARY KEY,
+        student_id TEXT,
+        teacher_id TEXT,
+        subject TEXT,
+        remark TEXT,
+        created_at TEXT,
+        FOREIGN KEY(student_id) REFERENCES users(id),
+        FOREIGN KEY(teacher_id) REFERENCES users(id)
     );
     """)
 
@@ -375,9 +415,143 @@ def seed():
     for opp in opps:
         c.execute("INSERT INTO opportunities VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", opp)
 
+    # 9. Attendance Sessions (Real session-by-session records for dynamic calculation)
+    # Course schedule:
+    # CS201 Data Structures & Algorithms: Mon & Wed
+    # CS203 OOPS in C++: Mon & Fri
+    # CS302 Computer Networks: Tue & Thu
+    # CS204 Mathematics — Linear Algebra: Wed & Fri
+
+    sessions = [
+        # August 2026
+        ("2026-08-24", "Data Structures & Algorithms", "Introduction & Time Complexity"),
+        ("2026-08-24", "OOPS in C++", "C++ Basic Syntax & Memory Layout"),
+        ("2026-08-25", "Computer Networks", "Network Models & OSI 7-Layer Architecture"),
+        ("2026-08-26", "Data Structures & Algorithms", "Dynamic Arrays & std::vector"),
+        ("2026-08-26", "Mathematics — Linear Algebra", "System of Linear Equations & Matrices"),
+        ("2026-08-27", "Computer Networks", "Physical & Data Link Layers"),
+        ("2026-08-28", "OOPS in C++", "Classes, Objects & Constructors"),
+        ("2026-08-28", "Mathematics — Linear Algebra", "Matrix Multiplication & Inverses"),
+        ("2026-08-31", "Data Structures & Algorithms", "Singly & Doubly Linked Lists"),
+        ("2026-08-31", "OOPS in C++", "Copy Constructors & Deep Copy"),
+
+        # September 2026 (Week 1: Sep 1 - Sep 6)
+        ("2026-09-01", "Computer Networks", "Framing, Error Detection & CRC"),
+        ("2026-09-02", "Data Structures & Algorithms", "Linked List Operations & Reversal"),
+        ("2026-09-02", "Mathematics — Linear Algebra", "Determinants & Elementary Row Operations"),
+        ("2026-09-03", "Computer Networks", "Flow Control & Sliding Window Protocols"),
+        ("2026-09-04", "OOPS in C++", "Operator Overloading & Friend Functions"),
+        ("2026-09-04", "Mathematics — Linear Algebra", "Vector Spaces & Subspaces"),
+
+        # September 2026 (Week 2: Sep 7 - Sep 13)
+        ("2026-09-07", "Data Structures & Algorithms", "Stacks & Queues Implementation"),
+        ("2026-09-07", "OOPS in C++", "Inheritance Hierarchies & Access Specifiers"),
+        ("2026-09-08", "Computer Networks", "Medium Access Control & CSMA/CD"),
+        ("2026-09-09", "Data Structures & Algorithms", "Stack Applications: Infix to Postfix"),
+        ("2026-09-09", "Mathematics — Linear Algebra", "Linear Independence & Basis"),
+        ("2026-09-10", "Computer Networks", "Ethernet Standards & Switching"),
+        ("2026-09-11", "OOPS in C++", "Virtual Functions & Dynamic Binding"),
+        ("2026-09-11", "Mathematics — Linear Algebra", "Dimension & Rank-Nullity Theorem"),
+
+        # September 2026 (Week 3: Sep 14 - Sep 20)
+        ("2026-09-14", "Data Structures & Algorithms", "Recursion & Divide and Conquer"),
+        ("2026-09-14", "OOPS in C++", "Pure Virtual Functions & Abstract Classes"),
+        ("2026-09-15", "Computer Networks", "IPv4 Addressing & Classful Routing"),
+        ("2026-09-16", "Data Structures & Algorithms", "Binary Trees & Tree Traversals"),
+        ("2026-09-16", "Mathematics — Linear Algebra", "Linear Transformations & Kernel"),
+        ("2026-09-17", "Computer Networks", "Subnetting & CIDR Calculations"),
+        ("2026-09-18", "OOPS in C++", "RAII Pattern & Smart Pointers"),
+        ("2026-09-18", "Mathematics — Linear Algebra", "Matrix Representation of Transformations"),
+
+        # September 2026 (Week 4: Sep 21 - Sep 27)
+        ("2026-09-21", "Data Structures & Algorithms", "Binary Search Trees (BST) Insertion & Search"),
+        ("2026-09-21", "OOPS in C++", "Exception Handling & Stack Unwinding"),
+        ("2026-09-22", "Computer Networks", "Address Resolution Protocol (ARP) & ICMP"),
+        ("2026-09-23", "Data Structures & Algorithms", "AVL Trees & Rotations"),
+        ("2026-09-23", "Mathematics — Linear Algebra", "Eigenvalues & Eigenvectors"),
+        ("2026-09-24", "Computer Networks", "Routing Algorithms: Distance Vector & OSPF"),
+        ("2026-09-25", "OOPS in C++", "C++ Standard Template Library (STL) Containers"),
+        ("2026-09-25", "Mathematics — Linear Algebra", "Diagonalization of Matrices"),
+
+        # September 2026 - October (Week 5: Sep 28 - Oct 4)
+        ("2026-09-28", "Data Structures & Algorithms", "Graph Representations: Adjacency List & Matrix"),
+        ("2026-09-28", "OOPS in C++", "STL Iterators & Lambda Expressions"),
+        ("2026-09-29", "Computer Networks", "TCP Connection Management & Handshake"),
+        ("2026-09-30", "Data Structures & Algorithms", "Graph Traversals: BFS & DFS"),
+        ("2026-09-30", "Mathematics — Linear Algebra", "Inner Product Spaces & Orthogonality"),
+        ("2026-10-01", "Computer Networks", "TCP Flow Control & Congestion Control"),
+        ("2026-10-02", "OOPS in C++", "File I/O Streams & Serialization"),
+        ("2026-10-02", "Mathematics — Linear Algebra", "Gram-Schmidt Orthogonalization"),
+
+        # October 2026 (Week 6: Oct 5 - Oct 11)
+        ("2026-10-05", "Data Structures & Algorithms", "Dijkstra's Shortest Path Algorithm"),
+        ("2026-10-05", "OOPS in C++", "C++ Multithreading Basics & std::thread"),
+        ("2026-10-06", "Computer Networks", "Socket Programming with TCP Sockets"),
+        ("2026-10-07", "Data Structures & Algorithms", "Minimum Spanning Tree: Prim & Kruskal"),
+        ("2026-10-07", "Mathematics — Linear Algebra", "Symmetric Matrices & Quadratic Forms"),
+        ("2026-10-08", "Computer Networks", "UDP Sockets & Header Inspection Lab"),
+        ("2026-10-09", "OOPS in C++", "Polymorphism Lab & Code Optimization"),
+        ("2026-10-09", "Mathematics — Linear Algebra", "Singular Value Decomposition (SVD)")
+    ]
+
+    att_id_counter = 1
+    # Specific absent and late dates for Atharva (std-001) to achieve ~87% attendance
+    std1_absent = {"2026-09-18", "2026-09-28"}
+    std1_late = {"2026-09-08", "2026-09-22", "2026-10-06"}
+
+    # Specific absent and late dates for Riya (std-002) to achieve ~95% attendance
+    std2_absent = {"2026-09-11"}
+    std2_late = {"2026-09-25"}
+
+    for dt, subj, topic in sessions:
+        # std-001
+        st1 = "Absent" if dt in std1_absent else "Late" if dt in std1_late else "Present"
+        c.execute("INSERT INTO attendance_records VALUES (?, ?, ?, ?, ?, ?)", (
+            f"att-{att_id_counter:04d}", "std-001", subj, dt, st1, topic
+        ))
+        att_id_counter += 1
+
+        # std-002
+        st2 = "Absent" if dt in std2_absent else "Late" if dt in std2_late else "Present"
+        c.execute("INSERT INTO attendance_records VALUES (?, ?, ?, ?, ?, ?)", (
+            f"att-{att_id_counter:04d}", "std-002", subj, dt, st2, topic
+        ))
+        att_id_counter += 1
+
+    # 10. Teacher Remarks
+    remarks = [
+        ("rem-001", "std-001", "tch-001", "Data Structures & Algorithms",
+         "Demonstrates solid logical aptitude in Arrays and Linked Lists. Needs reinforcement on recursive tree traversals and graph algorithms before end-semester evaluations.",
+         "2026-10-05"),
+        ("rem-002", "std-001", "tch-001", "OOPS in C++",
+         "Consistent practical implementation skills in inheritance and memory safety (RAII). Keep up the excellent work in polymorphic dispatch.",
+         "2026-10-07"),
+        ("rem-003", "std-001", "tch-002", "Computer Networks",
+         "Completed packet header analyzer successfully. Suggested focus: revise CIDR subnetting and TCP sliding window sequence number calculations.",
+         "2026-10-06"),
+        ("rem-004", "std-002", "tch-001", "Data Structures & Algorithms",
+         "Exceptional algorithmic precision and modular clean code practices. Actively participates in advanced graph optimization discussions.",
+         "2026-10-05"),
+        ("rem-005", "std-002", "tch-002", "Computer Networks",
+         "Top scoring student across socket assignments and midterm examination. Demonstrates deep grasp of protocol mechanics.",
+         "2026-10-06")
+    ]
+    for r in remarks:
+        c.execute("INSERT INTO teacher_remarks VALUES (?, ?, ?, ?, ?, ?)", r)
+
+    # 11. Initial Generated Report History
+    initial_reports = [
+        ("rep-001", "std-001", "STUDENT_INDIVIDUAL", "std-001", "Atharva Pagarwal", "monthly", "2026-09-01", "2026-09-30", "Student_Report_std-001_September_2026.pdf", "/api/reports/download/rep-001", "2026-10-01 10:15"),
+        ("rep-002", "std-001", "STUDENT_INDIVIDUAL", "std-001", "Atharva Pagarwal", "weekly", "2026-09-21", "2026-09-27", "Student_Report_std-001_Week4_Sep2026.pdf", "/api/reports/download/rep-002", "2026-09-28 09:30"),
+        ("rep-003", "tch-001", "CLASS_CONSOLIDATED", "sub-101", "Data Structures & Algorithms (CS201)", "monthly", "2026-09-01", "2026-09-30", "Class_Report_CS201_September_2026.pdf", "/api/reports/download/rep-003", "2026-10-02 11:45"),
+        ("rep-004", "tch-002", "CLASS_CONSOLIDATED", "sub-102", "Computer Networks (CS302)", "monthly", "2026-09-01", "2026-09-30", "Class_Report_CS302_September_2026.pdf", "/api/reports/download/rep-004", "2026-10-03 14:20")
+    ]
+    for rep in initial_reports:
+        c.execute("INSERT INTO generated_reports VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", rep)
+
     conn.commit()
     conn.close()
-    print("Clean SQLite database created and seeded with verified, distinct multi-student data!")
+    print("Clean SQLite database created and seeded with verified, distinct multi-student data, attendance records, and reports!")
 
 if __name__ == "__main__":
     seed()
